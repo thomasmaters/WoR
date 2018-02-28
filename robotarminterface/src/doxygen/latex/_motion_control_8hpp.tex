@@ -1,0 +1,90 @@
+\hypertarget{_motion_control_8hpp}{}\section{Motion\+Control.\+hpp File Reference}
+\label{_motion_control_8hpp}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}
+{\ttfamily \#include \char`\"{}Movement\+Command.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}Servo.\+hpp\char`\"{}}\\*
+{\ttfamily \#include \char`\"{}Smart\+Queue.\+hpp\char`\"{}}\\*
+{\ttfamily \#include $<$cstdint$>$}\\*
+{\ttfamily \#include $<$string$>$}\\*
+{\ttfamily \#include $<$vector$>$}\\*
+Include dependency graph for Motion\+Control.\+hpp\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=350pt]{_motion_control_8hpp__incl}
+\end{center}
+\end{figure}
+\subsection*{Classes}
+\begin{DoxyCompactItemize}
+\item 
+class \hyperlink{class_motion_control}{Motion\+Control}
+\end{DoxyCompactItemize}
+\subsection*{Macros}
+\begin{DoxyCompactItemize}
+\item 
+\#define \hyperlink{_motion_control_8hpp_a4a70d629781891dfddbb5caaff3254b0}{M\+A\+X\+\_\+\+S\+T\+A\+R\+T\+U\+P\+\_\+\+S\+T\+R\+I\+N\+G\+\_\+\+L\+E\+N\+G\+TH}~100
+\end{DoxyCompactItemize}
+\subsection*{Enumerations}
+\begin{DoxyCompactItemize}
+\item 
+enum \hyperlink{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4}{default\+Positions} \{ \hyperlink{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4ad22433eb60c8f12c80d3f45d02709b7b}{P\+A\+RK}, 
+\hyperlink{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4a6564f2f3e15be06b670547bbcaaf0798}{R\+E\+A\+DY}, 
+\hyperlink{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4af5805c05649c241ed1abb43be8aec4fd}{S\+T\+R\+A\+I\+G\+H\+T\+\_\+\+UP}
+ \}
+\item 
+enum \hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9b}{interface\+States} \{ \\*
+\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9bafd6a0e4343048b10646dd2976cc5ad18}{I\+D\+LE}, 
+\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9bae60eddad476ae478c84c809abc870c43}{S\+E\+N\+D\+I\+N\+G\+\_\+\+C\+O\+M\+M\+A\+ND}, 
+\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba4a9519c547008a358feb79d802607f8f}{M\+O\+V\+I\+N\+G\+\_\+\+A\+RM}, 
+\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba4b8a0c31ecac9e76c03a10bb451b8fe8}{M\+O\+V\+I\+N\+G\+\_\+\+F\+I\+N\+I\+S\+H\+ED}, 
+\\*
+\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba0cb1b2c6a7db1f1084886c98909a3f36}{I\+N\+IT}, 
+\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9baa446325b29d7c917325acc576f0f0f45}{I\+N\+I\+T\+\_\+\+E\+R\+R\+OR}, 
+\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba56a92b9980c854fa6e488ffeb6a2844b}{E\+M\+E\+R\+G\+E\+N\+C\+Y\+\_\+\+S\+T\+OP}
+ \}
+\end{DoxyCompactItemize}
+
+
+\subsection{Macro Definition Documentation}
+\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!M\+A\+X\+\_\+\+S\+T\+A\+R\+T\+U\+P\+\_\+\+S\+T\+R\+I\+N\+G\+\_\+\+L\+E\+N\+G\+TH@{M\+A\+X\+\_\+\+S\+T\+A\+R\+T\+U\+P\+\_\+\+S\+T\+R\+I\+N\+G\+\_\+\+L\+E\+N\+G\+TH}}
+\index{M\+A\+X\+\_\+\+S\+T\+A\+R\+T\+U\+P\+\_\+\+S\+T\+R\+I\+N\+G\+\_\+\+L\+E\+N\+G\+TH@{M\+A\+X\+\_\+\+S\+T\+A\+R\+T\+U\+P\+\_\+\+S\+T\+R\+I\+N\+G\+\_\+\+L\+E\+N\+G\+TH}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}
+\subsubsection[{\texorpdfstring{M\+A\+X\+\_\+\+S\+T\+A\+R\+T\+U\+P\+\_\+\+S\+T\+R\+I\+N\+G\+\_\+\+L\+E\+N\+G\+TH}{MAX_STARTUP_STRING_LENGTH}}]{\setlength{\rightskip}{0pt plus 5cm}\#define M\+A\+X\+\_\+\+S\+T\+A\+R\+T\+U\+P\+\_\+\+S\+T\+R\+I\+N\+G\+\_\+\+L\+E\+N\+G\+TH~100}\hypertarget{_motion_control_8hpp_a4a70d629781891dfddbb5caaff3254b0}{}\label{_motion_control_8hpp_a4a70d629781891dfddbb5caaff3254b0}
+
+
+\subsection{Enumeration Type Documentation}
+\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!default\+Positions@{default\+Positions}}
+\index{default\+Positions@{default\+Positions}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}
+\subsubsection[{\texorpdfstring{default\+Positions}{defaultPositions}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf default\+Positions}}\hypertarget{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4}{}\label{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4}
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{P\+A\+RK@{P\+A\+RK}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!P\+A\+RK@{P\+A\+RK}}\item[{\em 
+P\+A\+RK\hypertarget{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4ad22433eb60c8f12c80d3f45d02709b7b}{}\label{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4ad22433eb60c8f12c80d3f45d02709b7b}
+}]\index{R\+E\+A\+DY@{R\+E\+A\+DY}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!R\+E\+A\+DY@{R\+E\+A\+DY}}\item[{\em 
+R\+E\+A\+DY\hypertarget{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4a6564f2f3e15be06b670547bbcaaf0798}{}\label{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4a6564f2f3e15be06b670547bbcaaf0798}
+}]\index{S\+T\+R\+A\+I\+G\+H\+T\+\_\+\+UP@{S\+T\+R\+A\+I\+G\+H\+T\+\_\+\+UP}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!S\+T\+R\+A\+I\+G\+H\+T\+\_\+\+UP@{S\+T\+R\+A\+I\+G\+H\+T\+\_\+\+UP}}\item[{\em 
+S\+T\+R\+A\+I\+G\+H\+T\+\_\+\+UP\hypertarget{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4af5805c05649c241ed1abb43be8aec4fd}{}\label{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4af5805c05649c241ed1abb43be8aec4fd}
+}]\end{description}
+\end{Desc}
+\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!interface\+States@{interface\+States}}
+\index{interface\+States@{interface\+States}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}
+\subsubsection[{\texorpdfstring{interface\+States}{interfaceStates}}]{\setlength{\rightskip}{0pt plus 5cm}enum {\bf interface\+States}}\hypertarget{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9b}{}\label{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9b}
+\begin{Desc}
+\item[Enumerator]\par
+\begin{description}
+\index{I\+D\+LE@{I\+D\+LE}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!I\+D\+LE@{I\+D\+LE}}\item[{\em 
+I\+D\+LE\hypertarget{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9bafd6a0e4343048b10646dd2976cc5ad18}{}\label{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9bafd6a0e4343048b10646dd2976cc5ad18}
+}]\index{S\+E\+N\+D\+I\+N\+G\+\_\+\+C\+O\+M\+M\+A\+ND@{S\+E\+N\+D\+I\+N\+G\+\_\+\+C\+O\+M\+M\+A\+ND}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!S\+E\+N\+D\+I\+N\+G\+\_\+\+C\+O\+M\+M\+A\+ND@{S\+E\+N\+D\+I\+N\+G\+\_\+\+C\+O\+M\+M\+A\+ND}}\item[{\em 
+S\+E\+N\+D\+I\+N\+G\+\_\+\+C\+O\+M\+M\+A\+ND\hypertarget{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9bae60eddad476ae478c84c809abc870c43}{}\label{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9bae60eddad476ae478c84c809abc870c43}
+}]\index{M\+O\+V\+I\+N\+G\+\_\+\+A\+RM@{M\+O\+V\+I\+N\+G\+\_\+\+A\+RM}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!M\+O\+V\+I\+N\+G\+\_\+\+A\+RM@{M\+O\+V\+I\+N\+G\+\_\+\+A\+RM}}\item[{\em 
+M\+O\+V\+I\+N\+G\+\_\+\+A\+RM\hypertarget{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba4a9519c547008a358feb79d802607f8f}{}\label{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba4a9519c547008a358feb79d802607f8f}
+}]\index{M\+O\+V\+I\+N\+G\+\_\+\+F\+I\+N\+I\+S\+H\+ED@{M\+O\+V\+I\+N\+G\+\_\+\+F\+I\+N\+I\+S\+H\+ED}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!M\+O\+V\+I\+N\+G\+\_\+\+F\+I\+N\+I\+S\+H\+ED@{M\+O\+V\+I\+N\+G\+\_\+\+F\+I\+N\+I\+S\+H\+ED}}\item[{\em 
+M\+O\+V\+I\+N\+G\+\_\+\+F\+I\+N\+I\+S\+H\+ED\hypertarget{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba4b8a0c31ecac9e76c03a10bb451b8fe8}{}\label{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba4b8a0c31ecac9e76c03a10bb451b8fe8}
+}]\index{I\+N\+IT@{I\+N\+IT}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!I\+N\+IT@{I\+N\+IT}}\item[{\em 
+I\+N\+IT\hypertarget{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba0cb1b2c6a7db1f1084886c98909a3f36}{}\label{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba0cb1b2c6a7db1f1084886c98909a3f36}
+}]\index{I\+N\+I\+T\+\_\+\+E\+R\+R\+OR@{I\+N\+I\+T\+\_\+\+E\+R\+R\+OR}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!I\+N\+I\+T\+\_\+\+E\+R\+R\+OR@{I\+N\+I\+T\+\_\+\+E\+R\+R\+OR}}\item[{\em 
+I\+N\+I\+T\+\_\+\+E\+R\+R\+OR\hypertarget{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9baa446325b29d7c917325acc576f0f0f45}{}\label{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9baa446325b29d7c917325acc576f0f0f45}
+}]\index{E\+M\+E\+R\+G\+E\+N\+C\+Y\+\_\+\+S\+T\+OP@{E\+M\+E\+R\+G\+E\+N\+C\+Y\+\_\+\+S\+T\+OP}!Motion\+Control.\+hpp@{Motion\+Control.\+hpp}}\index{Motion\+Control.\+hpp@{Motion\+Control.\+hpp}!E\+M\+E\+R\+G\+E\+N\+C\+Y\+\_\+\+S\+T\+OP@{E\+M\+E\+R\+G\+E\+N\+C\+Y\+\_\+\+S\+T\+OP}}\item[{\em 
+E\+M\+E\+R\+G\+E\+N\+C\+Y\+\_\+\+S\+T\+OP\hypertarget{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba56a92b9980c854fa6e488ffeb6a2844b}{}\label{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9ba56a92b9980c854fa6e488ffeb6a2844b}
+}]\end{description}
+\end{Desc}

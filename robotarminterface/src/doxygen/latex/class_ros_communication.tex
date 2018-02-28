@@ -1,0 +1,165 @@
+\hypertarget{class_ros_communication}{}\section{Ros\+Communication Class Reference}
+\label{class_ros_communication}\index{Ros\+Communication@{Ros\+Communication}}
+
+
+{\ttfamily \#include $<$Ros\+Communication.\+hpp$>$}
+
+
+
+Collaboration diagram for Ros\+Communication\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=262pt]{class_ros_communication__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{class_ros_communication_a42d1d1d9e470379bcbeec795ad27315c}{init} ()
+\begin{DoxyCompactList}\small\item\em Initializes the ros communication. \end{DoxyCompactList}\item 
+bool \hyperlink{class_ros_communication_a820758b87bc530aeda82eddb2d0550f9}{get\+Interface\+State\+Request} (Robotarm\+\_\+\+Interface\+::interface\+State\+Srv\+::\+Request \&req, Robotarm\+\_\+\+Interface\+::interface\+State\+Srv\+::\+Response \&res)
+\begin{DoxyCompactList}\small\item\em Callback function for an interface state request. \end{DoxyCompactList}\item 
+void \hyperlink{class_ros_communication_aa00bb61de93c1117510fd5625035d9ab}{move\+Servo\+To\+Defined\+Pos\+Callback} (const Robotarm\+\_\+\+Interface\+::move\+Servo\+Defined\+Msg \&msg)
+\begin{DoxyCompactList}\small\item\em Handler when it receives an move\+Servo\+Defined\+Msg message. \end{DoxyCompactList}\item 
+void \hyperlink{class_ros_communication_a946c6140b6e83b2568d51501aff4f228}{move\+Single\+Servo\+Callback} (const Robotarm\+\_\+\+Interface\+::move\+Single\+Servo\+Msg \&msg)
+\begin{DoxyCompactList}\small\item\em Handler when it receives an move\+Single\+Servo\+Msg message. \end{DoxyCompactList}\item 
+void \hyperlink{class_ros_communication_a7af24efba9be306ac689849574686ab4}{move\+Multiple\+Servos\+Callback} (const Robotarm\+\_\+\+Interface\+::move\+Multiple\+Servos\+Msg \&msg)
+\begin{DoxyCompactList}\small\item\em Handler when it receives an move\+Multiple\+Servos\+Msg message. \end{DoxyCompactList}\item 
+void \hyperlink{class_ros_communication_ab2d6174904dad1ce1a066f1d4a6c8fd8}{emergency\+Stop\+Callback} (const Robotarm\+\_\+\+Interface\+::emergency\+Stop\+Msg \&msg)
+\begin{DoxyCompactList}\small\item\em Handler when it receives an emergency\+Stop\+Msg message. \end{DoxyCompactList}\item 
+virtual \hyperlink{class_ros_communication_ab65e97f16b04e4a752d48f9f991c32a1}{$\sim$\+Ros\+Communication} ()
+\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{class_ros_communication}{Ros\+Communication} \& \hyperlink{class_ros_communication_a4e138754ad16b2a2743c28ff8afac919}{get\+Instance} ()
+\begin{DoxyCompactList}\small\item\em Gets an \hyperlink{class_ros_communication}{Ros\+Communication} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Ros\+Communication@{Ros\+Communication}!````~Ros\+Communication@{$\sim$\+Ros\+Communication}}
+\index{````~Ros\+Communication@{$\sim$\+Ros\+Communication}!Ros\+Communication@{Ros\+Communication}}
+\subsubsection[{\texorpdfstring{$\sim$\+Ros\+Communication()}{~RosCommunication()}}]{\setlength{\rightskip}{0pt plus 5cm}Ros\+Communication\+::$\sim$\+Ros\+Communication (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{class_ros_communication_ab65e97f16b04e4a752d48f9f991c32a1}{}\label{class_ros_communication_ab65e97f16b04e4a752d48f9f991c32a1}
+
+
+\subsection{Member Function Documentation}
+\index{Ros\+Communication@{Ros\+Communication}!emergency\+Stop\+Callback@{emergency\+Stop\+Callback}}
+\index{emergency\+Stop\+Callback@{emergency\+Stop\+Callback}!Ros\+Communication@{Ros\+Communication}}
+\subsubsection[{\texorpdfstring{emergency\+Stop\+Callback(const Robotarm\+\_\+\+Interface\+::emergency\+Stop\+Msg \&msg)}{emergencyStopCallback(const robotarminterface::emergencyStopMsg &msg)}}]{\setlength{\rightskip}{0pt plus 5cm}void Ros\+Communication\+::emergency\+Stop\+Callback (
+\begin{DoxyParamCaption}
+\item[{const Robotarm\+\_\+\+Interface\+::emergency\+Stop\+Msg \&}]{msg}
+\end{DoxyParamCaption}
+)}\hypertarget{class_ros_communication_ab2d6174904dad1ce1a066f1d4a6c8fd8}{}\label{class_ros_communication_ab2d6174904dad1ce1a066f1d4a6c8fd8}
+
+
+Handler when it receives an emergency\+Stop\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & Message type. \\
+\hline
+\end{DoxyParams}
+\index{Ros\+Communication@{Ros\+Communication}!get\+Instance@{get\+Instance}}
+\index{get\+Instance@{get\+Instance}!Ros\+Communication@{Ros\+Communication}}
+\subsubsection[{\texorpdfstring{get\+Instance()}{getInstance()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Ros\+Communication} \& Ros\+Communication\+::get\+Instance (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{class_ros_communication_a4e138754ad16b2a2743c28ff8afac919}{}\label{class_ros_communication_a4e138754ad16b2a2743c28ff8afac919}
+
+
+Gets an \hyperlink{class_ros_communication}{Ros\+Communication} instance. 
+
+\index{Ros\+Communication@{Ros\+Communication}!get\+Interface\+State\+Request@{get\+Interface\+State\+Request}}
+\index{get\+Interface\+State\+Request@{get\+Interface\+State\+Request}!Ros\+Communication@{Ros\+Communication}}
+\subsubsection[{\texorpdfstring{get\+Interface\+State\+Request(\+Robotarm\+\_\+\+Interface\+::interface\+State\+Srv\+::\+Request \&req, Robotarm\+\_\+\+Interface\+::interface\+State\+Srv\+::\+Response \&res)}{getInterfaceStateRequest(robotarminterface::interfaceStateSrv::Request &req, robotarminterface::interfaceStateSrv::Response &res)}}]{\setlength{\rightskip}{0pt plus 5cm}bool Ros\+Communication\+::get\+Interface\+State\+Request (
+\begin{DoxyParamCaption}
+\item[{Robotarm\+\_\+\+Interface\+::interface\+State\+Srv\+::\+Request \&}]{req, }
+\item[{Robotarm\+\_\+\+Interface\+::interface\+State\+Srv\+::\+Response \&}]{res}
+\end{DoxyParamCaption}
+)}\hypertarget{class_ros_communication_a820758b87bc530aeda82eddb2d0550f9}{}\label{class_ros_communication_a820758b87bc530aeda82eddb2d0550f9}
+
+
+Callback function for an interface state request. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em req} & Request struct. \\
+\hline
+{\em res} & Response struct. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns if ros can send the response back. 
+\end{DoxyReturn}
+\index{Ros\+Communication@{Ros\+Communication}!init@{init}}
+\index{init@{init}!Ros\+Communication@{Ros\+Communication}}
+\subsubsection[{\texorpdfstring{init()}{init()}}]{\setlength{\rightskip}{0pt plus 5cm}bool Ros\+Communication\+::init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_ros_communication_a42d1d1d9e470379bcbeec795ad27315c}{}\label{class_ros_communication_a42d1d1d9e470379bcbeec795ad27315c}
+
+
+Initializes the ros communication. 
+
+\index{Ros\+Communication@{Ros\+Communication}!move\+Multiple\+Servos\+Callback@{move\+Multiple\+Servos\+Callback}}
+\index{move\+Multiple\+Servos\+Callback@{move\+Multiple\+Servos\+Callback}!Ros\+Communication@{Ros\+Communication}}
+\subsubsection[{\texorpdfstring{move\+Multiple\+Servos\+Callback(const Robotarm\+\_\+\+Interface\+::move\+Multiple\+Servos\+Msg \&msg)}{moveMultipleServosCallback(const robotarminterface::moveMultipleServosMsg &msg)}}]{\setlength{\rightskip}{0pt plus 5cm}void Ros\+Communication\+::move\+Multiple\+Servos\+Callback (
+\begin{DoxyParamCaption}
+\item[{const Robotarm\+\_\+\+Interface\+::move\+Multiple\+Servos\+Msg \&}]{msg}
+\end{DoxyParamCaption}
+)}\hypertarget{class_ros_communication_a7af24efba9be306ac689849574686ab4}{}\label{class_ros_communication_a7af24efba9be306ac689849574686ab4}
+
+
+Handler when it receives an move\+Multiple\+Servos\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & Message type. \\
+\hline
+\end{DoxyParams}
+\index{Ros\+Communication@{Ros\+Communication}!move\+Servo\+To\+Defined\+Pos\+Callback@{move\+Servo\+To\+Defined\+Pos\+Callback}}
+\index{move\+Servo\+To\+Defined\+Pos\+Callback@{move\+Servo\+To\+Defined\+Pos\+Callback}!Ros\+Communication@{Ros\+Communication}}
+\subsubsection[{\texorpdfstring{move\+Servo\+To\+Defined\+Pos\+Callback(const Robotarm\+\_\+\+Interface\+::move\+Servo\+Defined\+Msg \&msg)}{moveServoToDefinedPosCallback(const robotarminterface::moveServoDefinedMsg &msg)}}]{\setlength{\rightskip}{0pt plus 5cm}void Ros\+Communication\+::move\+Servo\+To\+Defined\+Pos\+Callback (
+\begin{DoxyParamCaption}
+\item[{const Robotarm\+\_\+\+Interface\+::move\+Servo\+Defined\+Msg \&}]{msg}
+\end{DoxyParamCaption}
+)}\hypertarget{class_ros_communication_aa00bb61de93c1117510fd5625035d9ab}{}\label{class_ros_communication_aa00bb61de93c1117510fd5625035d9ab}
+
+
+Handler when it receives an move\+Servo\+Defined\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & Message type. \\
+\hline
+\end{DoxyParams}
+\index{Ros\+Communication@{Ros\+Communication}!move\+Single\+Servo\+Callback@{move\+Single\+Servo\+Callback}}
+\index{move\+Single\+Servo\+Callback@{move\+Single\+Servo\+Callback}!Ros\+Communication@{Ros\+Communication}}
+\subsubsection[{\texorpdfstring{move\+Single\+Servo\+Callback(const Robotarm\+\_\+\+Interface\+::move\+Single\+Servo\+Msg \&msg)}{moveSingleServoCallback(const robotarminterface::moveSingleServoMsg &msg)}}]{\setlength{\rightskip}{0pt plus 5cm}void Ros\+Communication\+::move\+Single\+Servo\+Callback (
+\begin{DoxyParamCaption}
+\item[{const Robotarm\+\_\+\+Interface\+::move\+Single\+Servo\+Msg \&}]{msg}
+\end{DoxyParamCaption}
+)}\hypertarget{class_ros_communication_a946c6140b6e83b2568d51501aff4f228}{}\label{class_ros_communication_a946c6140b6e83b2568d51501aff4f228}
+
+
+Handler when it receives an move\+Single\+Servo\+Msg message. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em msg} & Message type. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{_ros_communication_8hpp}{Ros\+Communication.\+hpp}\item 
+\hyperlink{_ros_communication_8cpp}{Ros\+Communication.\+cpp}\end{DoxyCompactItemize}
