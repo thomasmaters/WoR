@@ -1,0 +1,475 @@
+\hypertarget{class_motion_control}{}\section{Motion\+Control Class Reference}
+\label{class_motion_control}\index{Motion\+Control@{Motion\+Control}}
+
+
+{\ttfamily \#include $<$Motion\+Control.\+hpp$>$}
+
+
+
+Collaboration diagram for Motion\+Control\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=235pt]{class_motion_control__coll__graph}
+\end{center}
+\end{figure}
+\subsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+bool \hyperlink{class_motion_control_af101a2f120d4e5a08c540d83ef078768}{init} ()
+\begin{DoxyCompactList}\small\item\em Starts the initialization of the motion controller. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_ae348a531c3fe5a5d8d729e1dd2387f7f}{move\+To\+Position} (\hyperlink{_motion_control_8hpp_ac70e3c2821eb6a3860441f2c682f0aa4}{default\+Positions} position)
+\begin{DoxyCompactList}\small\item\em Moves robot to a predefined position. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a69e807208c6fffd7c4b7c7159792c3e9}{move\+Servo} (const uint8\+\_\+t channel, const uint16\+\_\+t rotation, const uint16\+\_\+t speed)
+\begin{DoxyCompactList}\small\item\em Moves a single servo with a specific speed. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a0acba77f349d42609ed2c0e520b8cf08}{move\+Servo} (const std\+::string name, const uint16\+\_\+t rotation, const uint16\+\_\+t speed)
+\begin{DoxyCompactList}\small\item\em Moves a single servo with a specific speed. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a13582b1d506a7e85b23efaa9750ba0c8}{move\+Servo\+Timed} (const uint8\+\_\+t channel, const uint16\+\_\+t rotation, const uint16\+\_\+t time)
+\begin{DoxyCompactList}\small\item\em Moves a single servo in a spcified time. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_af2e8c8ede76ded5423deeddffa20ea52}{move\+Servo\+Timed} (const std\+::string name, const uint16\+\_\+t rotation, const uint16\+\_\+t time)
+\begin{DoxyCompactList}\small\item\em Moves a single servo in a spcified time. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_ab0693a90571a5e641cb7a7f8d43cee7a}{move\+Multiple\+Servos\+Timed} (const std\+::vector$<$ std\+::pair$<$ uint8\+\_\+t, uint16\+\_\+t $>$$>$ servo\+Positions, const uint16\+\_\+t time)
+\begin{DoxyCompactList}\small\item\em Sends a movement command that moves multiple servo\textquotesingle{}s at once to a location. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_aef8ec3f50c56b8981114c742486adae9}{stop\+Movement\+Command} (const uint8\+\_\+t channel)
+\begin{DoxyCompactList}\small\item\em Stops all the movement that is currently going on. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a620288ede2a839574451dcfa5ff9c923}{stop\+Servo} (const uint8\+\_\+t channel)
+\begin{DoxyCompactList}\small\item\em Immidetly stops servo. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_af8136756f3c37e8d7850b3f320661e34}{stop\+Servo} (const std\+::string name)
+\begin{DoxyCompactList}\small\item\em Immidetly stops servo. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_ac45a88fcd3c1f1b238260ae8d1cb020f}{stop\+All\+Servos} ()
+\begin{DoxyCompactList}\small\item\em Stops all connected servo\textquotesingle{}s immidietly. \end{DoxyCompactList}\item 
+bool \hyperlink{class_motion_control_aee4432cb6495fb8c4ca87aede785a279}{is\+Movement\+Finished} ()
+\begin{DoxyCompactList}\small\item\em Checks if the last movement command has been finished. \end{DoxyCompactList}\item 
+uint16\+\_\+t \hyperlink{class_motion_control_ace0441eb6ebd0746a7cd725888eda95f}{get\+Servo\+Current\+Pulse\+Width} (const uint8\+\_\+t channel)
+\begin{DoxyCompactList}\small\item\em Gets the servo current pulse width. \end{DoxyCompactList}\item 
+uint32\+\_\+t \hyperlink{class_motion_control_a8285160feb7216da095011467e89296a}{get\+Baud\+Rate} ()
+\begin{DoxyCompactList}\small\item\em Gets baudrate from C\+S\+S-\/32U. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a1fff14f3ca9bb02e88c1732d99ed85da}{set\+Baud\+Rate} (uint32\+\_\+t baud\+Rate)
+\begin{DoxyCompactList}\small\item\em Sets the bautrate of the C\+S\+S-\/32U. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a4f4f1db6889e853aa8f65d9798ed82f9}{add\+Servo\+Startup\+Position} (const uint8\+\_\+t channel, const uint16\+\_\+t degrees, const uint16\+\_\+t speed)
+\begin{DoxyCompactList}\small\item\em Adds a servo movement command to the end of the startup string. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a75a6ade7872ae6dca9a9aac5e480d0cc}{download\+Startup\+String} (std\+::string startup=\char`\"{}\char`\"{})
+\begin{DoxyCompactList}\small\item\em Downloads the startup string to the controller. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a22be1560b1b948c005690b549d43fede}{clear\+Startup\+String} ()
+\begin{DoxyCompactList}\small\item\em Clears the local startup string, so a new one can be constructed. \end{DoxyCompactList}\item 
+uint8\+\_\+t \hyperlink{class_motion_control_a90bef8080c16a7fbf50067cf7a82b763}{get\+Servo\+Channel\+From\+Name} (std\+::string name)
+\begin{DoxyCompactList}\small\item\em Gets the channel of a connected servo from its name. \end{DoxyCompactList}\item 
+const \hyperlink{class_servo}{Servo} \& \hyperlink{class_motion_control_a72090241f759360a28b506920152a47e}{get\+Servo\+From\+Channel} (uint8\+\_\+t channel)
+\begin{DoxyCompactList}\small\item\em Gets a reference to a connected servo. \end{DoxyCompactList}\item 
+virtual \hyperlink{class_motion_control_a43171f06f0911cc220031109cc1636d0}{$\sim$\+Motion\+Control} ()
+\begin{DoxyCompactList}\small\item\em Destructor. \end{DoxyCompactList}\item 
+\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9b}{interface\+States} \hyperlink{class_motion_control_ace751f7251f62b4f3c9180b172eedc5f}{get\+Interface\+State} () const 
+\begin{DoxyCompactList}\small\item\em Getter interface\+State. \end{DoxyCompactList}\item 
+void \hyperlink{class_motion_control_a6c5973e8371249dc5d055831470808ac}{set\+Interface\+State} (\hyperlink{_motion_control_8hpp_ac095d62e5392b8d263c10f37a76e6d9b}{interface\+States} interface\+State)
+\begin{DoxyCompactList}\small\item\em Setter interface\+State. \end{DoxyCompactList}\end{DoxyCompactItemize}
+\subsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static \hyperlink{class_motion_control}{Motion\+Control} \& \hyperlink{class_motion_control_a9918895a97629d892598701a0df519e2}{get\+Instance} ()
+\begin{DoxyCompactList}\small\item\em Gets the a reference to a \hyperlink{class_serial_control}{Serial\+Control} instance. \end{DoxyCompactList}\end{DoxyCompactItemize}
+
+
+\subsection{Constructor \& Destructor Documentation}
+\index{Motion\+Control@{Motion\+Control}!````~Motion\+Control@{$\sim$\+Motion\+Control}}
+\index{````~Motion\+Control@{$\sim$\+Motion\+Control}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{$\sim$\+Motion\+Control()}{~MotionControl()}}]{\setlength{\rightskip}{0pt plus 5cm}Motion\+Control\+::$\sim$\+Motion\+Control (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [virtual]}}\hypertarget{class_motion_control_a43171f06f0911cc220031109cc1636d0}{}\label{class_motion_control_a43171f06f0911cc220031109cc1636d0}
+
+
+Destructor. 
+
+
+
+\subsection{Member Function Documentation}
+\index{Motion\+Control@{Motion\+Control}!add\+Servo\+Startup\+Position@{add\+Servo\+Startup\+Position}}
+\index{add\+Servo\+Startup\+Position@{add\+Servo\+Startup\+Position}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{add\+Servo\+Startup\+Position(const uint8\+\_\+t channel, const uint16\+\_\+t degrees, const uint16\+\_\+t speed)}{addServoStartupPosition(const uint8_t channel, const uint16_t degrees, const uint16_t speed)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::add\+Servo\+Startup\+Position (
+\begin{DoxyParamCaption}
+\item[{const uint8\+\_\+t}]{channel, }
+\item[{const uint16\+\_\+t}]{degrees, }
+\item[{const uint16\+\_\+t}]{speed}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a4f4f1db6889e853aa8f65d9798ed82f9}{}\label{class_motion_control_a4f4f1db6889e853aa8f65d9798ed82f9}
+
+
+Adds a servo movement command to the end of the startup string. 
+
+S\+S\+C\+AT \#0\+P1500\+T5000?$<$cr$>$ 
+\begin{DoxyParams}{Parameters}
+{\em channel} & Channel the servo is connected too. \\
+\hline
+{\em degrees} & Rotation the servo has to go too when the controller starts. \\
+\hline
+{\em speed} & Speed in usec/s the servo will move. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!clear\+Startup\+String@{clear\+Startup\+String}}
+\index{clear\+Startup\+String@{clear\+Startup\+String}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{clear\+Startup\+String()}{clearStartupString()}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::clear\+Startup\+String (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_motion_control_a22be1560b1b948c005690b549d43fede}{}\label{class_motion_control_a22be1560b1b948c005690b549d43fede}
+
+
+Clears the local startup string, so a new one can be constructed. 
+
+Use delete\+Startup\+String() to delete it from the controller. \index{Motion\+Control@{Motion\+Control}!download\+Startup\+String@{download\+Startup\+String}}
+\index{download\+Startup\+String@{download\+Startup\+String}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{download\+Startup\+String(std\+::string startup="""")}{downloadStartupString(std::string startup="")}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::download\+Startup\+String (
+\begin{DoxyParamCaption}
+\item[{std\+::string}]{startup = {\ttfamily \char`\"{}\char`\"{}}}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a75a6ade7872ae6dca9a9aac5e480d0cc}{}\label{class_motion_control_a75a6ade7872ae6dca9a9aac5e480d0cc}
+
+
+Downloads the startup string to the controller. 
+
+\index{Motion\+Control@{Motion\+Control}!get\+Baud\+Rate@{get\+Baud\+Rate}}
+\index{get\+Baud\+Rate@{get\+Baud\+Rate}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{get\+Baud\+Rate()}{getBaudRate()}}]{\setlength{\rightskip}{0pt plus 5cm}uint32\+\_\+t Motion\+Control\+::get\+Baud\+Rate (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a8285160feb7216da095011467e89296a}{}\label{class_motion_control_a8285160feb7216da095011467e89296a}
+
+
+Gets baudrate from C\+S\+S-\/32U. 
+
+By reading a register value. R4$<$cr$>$ \begin{DoxyReturn}{Returns}
+Returns the baudrate of the controller. 
+\end{DoxyReturn}
+\index{Motion\+Control@{Motion\+Control}!get\+Instance@{get\+Instance}}
+\index{get\+Instance@{get\+Instance}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{get\+Instance()}{getInstance()}}]{\setlength{\rightskip}{0pt plus 5cm}{\bf Motion\+Control} \& Motion\+Control\+::get\+Instance (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [static]}}\hypertarget{class_motion_control_a9918895a97629d892598701a0df519e2}{}\label{class_motion_control_a9918895a97629d892598701a0df519e2}
+
+
+Gets the a reference to a \hyperlink{class_serial_control}{Serial\+Control} instance. 
+
+\index{Motion\+Control@{Motion\+Control}!get\+Interface\+State@{get\+Interface\+State}}
+\index{get\+Interface\+State@{get\+Interface\+State}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{get\+Interface\+State() const }{getInterfaceState() const }}]{\setlength{\rightskip}{0pt plus 5cm}{\bf interface\+States} Motion\+Control\+::get\+Interface\+State (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+) const\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_motion_control_ace751f7251f62b4f3c9180b172eedc5f}{}\label{class_motion_control_ace751f7251f62b4f3c9180b172eedc5f}
+
+
+Getter interface\+State. 
+
+\begin{DoxyReturn}{Returns}
+Returns the current interface\+State. 
+\end{DoxyReturn}
+\index{Motion\+Control@{Motion\+Control}!get\+Servo\+Channel\+From\+Name@{get\+Servo\+Channel\+From\+Name}}
+\index{get\+Servo\+Channel\+From\+Name@{get\+Servo\+Channel\+From\+Name}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{get\+Servo\+Channel\+From\+Name(std\+::string name)}{getServoChannelFromName(std::string name)}}]{\setlength{\rightskip}{0pt plus 5cm}uint8\+\_\+t Motion\+Control\+::get\+Servo\+Channel\+From\+Name (
+\begin{DoxyParamCaption}
+\item[{std\+::string}]{name}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a90bef8080c16a7fbf50067cf7a82b763}{}\label{class_motion_control_a90bef8080c16a7fbf50067cf7a82b763}
+
+
+Gets the channel of a connected servo from its name. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the servo. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns the channel from the servo. If the servo could not be found it will return 255. 
+\end{DoxyReturn}
+\index{Motion\+Control@{Motion\+Control}!get\+Servo\+Current\+Pulse\+Width@{get\+Servo\+Current\+Pulse\+Width}}
+\index{get\+Servo\+Current\+Pulse\+Width@{get\+Servo\+Current\+Pulse\+Width}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{get\+Servo\+Current\+Pulse\+Width(const uint8\+\_\+t channel)}{getServoCurrentPulseWidth(const uint8_t channel)}}]{\setlength{\rightskip}{0pt plus 5cm}uint16\+\_\+t Motion\+Control\+::get\+Servo\+Current\+Pulse\+Width (
+\begin{DoxyParamCaption}
+\item[{const uint8\+\_\+t}]{channel}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_ace0441eb6ebd0746a7cd725888eda95f}{}\label{class_motion_control_ace0441eb6ebd0746a7cd725888eda95f}
+
+
+Gets the servo current pulse width. 
+
+QP $<$arg$>$ $<$cr$>$ 
+\begin{DoxyParams}{Parameters}
+{\em channel} & Channel the servo is connected too. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns the pulse width of the servo. Returns 0 if the servo is not connected. 
+\end{DoxyReturn}
+\index{Motion\+Control@{Motion\+Control}!get\+Servo\+From\+Channel@{get\+Servo\+From\+Channel}}
+\index{get\+Servo\+From\+Channel@{get\+Servo\+From\+Channel}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{get\+Servo\+From\+Channel(uint8\+\_\+t channel)}{getServoFromChannel(uint8_t channel)}}]{\setlength{\rightskip}{0pt plus 5cm}const {\bf Servo} \& Motion\+Control\+::get\+Servo\+From\+Channel (
+\begin{DoxyParamCaption}
+\item[{uint8\+\_\+t}]{channel}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a72090241f759360a28b506920152a47e}{}\label{class_motion_control_a72090241f759360a28b506920152a47e}
+
+
+Gets a reference to a connected servo. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em channel} & Channel the servo is connected too. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Returns a reference to a stored \hyperlink{class_servo}{Servo} instance. 
+\end{DoxyReturn}
+\index{Motion\+Control@{Motion\+Control}!init@{init}}
+\index{init@{init}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{init()}{init()}}]{\setlength{\rightskip}{0pt plus 5cm}bool Motion\+Control\+::init (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_af101a2f120d4e5a08c540d83ef078768}{}\label{class_motion_control_af101a2f120d4e5a08c540d83ef078768}
+
+
+Starts the initialization of the motion controller. 
+
+\begin{DoxyReturn}{Returns}
+Returns true if initialization was succesfull. 
+\end{DoxyReturn}
+\index{Motion\+Control@{Motion\+Control}!is\+Movement\+Finished@{is\+Movement\+Finished}}
+\index{is\+Movement\+Finished@{is\+Movement\+Finished}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{is\+Movement\+Finished()}{isMovementFinished()}}]{\setlength{\rightskip}{0pt plus 5cm}bool Motion\+Control\+::is\+Movement\+Finished (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_aee4432cb6495fb8c4ca87aede785a279}{}\label{class_motion_control_aee4432cb6495fb8c4ca87aede785a279}
+
+
+Checks if the last movement command has been finished. 
+
+Q $<$cr$>$ \begin{DoxyReturn}{Returns}
+Returns true if the last send movement command has been executed. 
+\end{DoxyReturn}
+\index{Motion\+Control@{Motion\+Control}!move\+Multiple\+Servos\+Timed@{move\+Multiple\+Servos\+Timed}}
+\index{move\+Multiple\+Servos\+Timed@{move\+Multiple\+Servos\+Timed}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{move\+Multiple\+Servos\+Timed(const std\+::vector$<$ std\+::pair$<$ uint8\+\_\+t, uint16\+\_\+t $>$$>$ servo\+Positions, const uint16\+\_\+t time)}{moveMultipleServosTimed(const std::vector< std::pair< uint8_t, uint16_t >> servoPositions, const uint16_t time)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::move\+Multiple\+Servos\+Timed (
+\begin{DoxyParamCaption}
+\item[{const std\+::vector$<$ std\+::pair$<$ uint8\+\_\+t, uint16\+\_\+t $>$$>$}]{servo\+Positions, }
+\item[{const uint16\+\_\+t}]{time}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_ab0693a90571a5e641cb7a7f8d43cee7a}{}\label{class_motion_control_ab0693a90571a5e641cb7a7f8d43cee7a}
+
+
+Sends a movement command that moves multiple servo\textquotesingle{}s at once to a location. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em servo\+Positions} & An vector with pairs of a connected channel and an rotation in degrees. \\
+\hline
+{\em time} & Time in miliseconds the move has to take. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!move\+Servo@{move\+Servo}}
+\index{move\+Servo@{move\+Servo}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{move\+Servo(const uint8\+\_\+t channel, const uint16\+\_\+t rotation, const uint16\+\_\+t speed)}{moveServo(const uint8_t channel, const uint16_t rotation, const uint16_t speed)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::move\+Servo (
+\begin{DoxyParamCaption}
+\item[{const uint8\+\_\+t}]{channel, }
+\item[{const uint16\+\_\+t}]{rotation, }
+\item[{const uint16\+\_\+t}]{speed}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a69e807208c6fffd7c4b7c7159792c3e9}{}\label{class_motion_control_a69e807208c6fffd7c4b7c7159792c3e9}
+
+
+Moves a single servo with a specific speed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em channel} & Channel the servo is connected too. \\
+\hline
+{\em rotation} & Rotation in degrees the servo has to move to. \\
+\hline
+{\em speed} & Speed in usec/s the servo will move. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!move\+Servo@{move\+Servo}}
+\index{move\+Servo@{move\+Servo}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{move\+Servo(const std\+::string name, const uint16\+\_\+t rotation, const uint16\+\_\+t speed)}{moveServo(const std::string name, const uint16_t rotation, const uint16_t speed)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::move\+Servo (
+\begin{DoxyParamCaption}
+\item[{const std\+::string}]{name, }
+\item[{const uint16\+\_\+t}]{rotation, }
+\item[{const uint16\+\_\+t}]{speed}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a0acba77f349d42609ed2c0e520b8cf08}{}\label{class_motion_control_a0acba77f349d42609ed2c0e520b8cf08}
+
+
+Moves a single servo with a specific speed. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the connected servo. \\
+\hline
+{\em rotation} & Rotation in degrees the servo has to move to. \\
+\hline
+{\em speed} & Speed in usec/s the servo will move. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!move\+Servo\+Timed@{move\+Servo\+Timed}}
+\index{move\+Servo\+Timed@{move\+Servo\+Timed}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{move\+Servo\+Timed(const uint8\+\_\+t channel, const uint16\+\_\+t rotation, const uint16\+\_\+t time)}{moveServoTimed(const uint8_t channel, const uint16_t rotation, const uint16_t time)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::move\+Servo\+Timed (
+\begin{DoxyParamCaption}
+\item[{const uint8\+\_\+t}]{channel, }
+\item[{const uint16\+\_\+t}]{rotation, }
+\item[{const uint16\+\_\+t}]{time}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a13582b1d506a7e85b23efaa9750ba0c8}{}\label{class_motion_control_a13582b1d506a7e85b23efaa9750ba0c8}
+
+
+Moves a single servo in a spcified time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em channel} & Channel the servo is connected too. \\
+\hline
+{\em rotation} & Rotation in degrees the servo has to move to. \\
+\hline
+{\em time} & Time in miliseconds the move has to take. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!move\+Servo\+Timed@{move\+Servo\+Timed}}
+\index{move\+Servo\+Timed@{move\+Servo\+Timed}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{move\+Servo\+Timed(const std\+::string name, const uint16\+\_\+t rotation, const uint16\+\_\+t time)}{moveServoTimed(const std::string name, const uint16_t rotation, const uint16_t time)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::move\+Servo\+Timed (
+\begin{DoxyParamCaption}
+\item[{const std\+::string}]{name, }
+\item[{const uint16\+\_\+t}]{rotation, }
+\item[{const uint16\+\_\+t}]{time}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_af2e8c8ede76ded5423deeddffa20ea52}{}\label{class_motion_control_af2e8c8ede76ded5423deeddffa20ea52}
+
+
+Moves a single servo in a spcified time. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the connected servo. \\
+\hline
+{\em rotation} & Rotation in degrees the servo has to move to. \\
+\hline
+{\em time} & Time in miliseconds the move has to take. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!move\+To\+Position@{move\+To\+Position}}
+\index{move\+To\+Position@{move\+To\+Position}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{move\+To\+Position(default\+Positions position)}{moveToPosition(defaultPositions position)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::move\+To\+Position (
+\begin{DoxyParamCaption}
+\item[{{\bf default\+Positions}}]{position}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_ae348a531c3fe5a5d8d729e1dd2387f7f}{}\label{class_motion_control_ae348a531c3fe5a5d8d729e1dd2387f7f}
+
+
+Moves robot to a predefined position. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em position} & a predefined position in the default\+Positions enum. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!set\+Baud\+Rate@{set\+Baud\+Rate}}
+\index{set\+Baud\+Rate@{set\+Baud\+Rate}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{set\+Baud\+Rate(uint32\+\_\+t baud\+Rate)}{setBaudRate(uint32_t baudRate)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::set\+Baud\+Rate (
+\begin{DoxyParamCaption}
+\item[{uint32\+\_\+t}]{baud\+Rate}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a1fff14f3ca9bb02e88c1732d99ed85da}{}\label{class_motion_control_a1fff14f3ca9bb02e88c1732d99ed85da}
+
+
+Sets the bautrate of the C\+S\+S-\/32U. 
+
+R4=$<$baud$>$ 
+\begin{DoxyParams}{Parameters}
+{\em baud\+Rate} & Baudrate to set the controller to. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!set\+Interface\+State@{set\+Interface\+State}}
+\index{set\+Interface\+State@{set\+Interface\+State}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{set\+Interface\+State(interface\+States interface\+State)}{setInterfaceState(interfaceStates interfaceState)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::set\+Interface\+State (
+\begin{DoxyParamCaption}
+\item[{{\bf interface\+States}}]{interface\+State}
+\end{DoxyParamCaption}
+)\hspace{0.3cm}{\ttfamily [inline]}}\hypertarget{class_motion_control_a6c5973e8371249dc5d055831470808ac}{}\label{class_motion_control_a6c5973e8371249dc5d055831470808ac}
+
+
+Setter interface\+State. 
+
+
+\begin{DoxyParams}{Parameters}
+{\em interface\+State} & A new interface\+State. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!stop\+All\+Servos@{stop\+All\+Servos}}
+\index{stop\+All\+Servos@{stop\+All\+Servos}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{stop\+All\+Servos()}{stopAllServos()}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::stop\+All\+Servos (
+\begin{DoxyParamCaption}
+{}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_ac45a88fcd3c1f1b238260ae8d1cb020f}{}\label{class_motion_control_ac45a88fcd3c1f1b238260ae8d1cb020f}
+
+
+Stops all connected servo\textquotesingle{}s immidietly. 
+
+\index{Motion\+Control@{Motion\+Control}!stop\+Movement\+Command@{stop\+Movement\+Command}}
+\index{stop\+Movement\+Command@{stop\+Movement\+Command}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{stop\+Movement\+Command(const uint8\+\_\+t channel)}{stopMovementCommand(const uint8_t channel)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::stop\+Movement\+Command (
+\begin{DoxyParamCaption}
+\item[{const uint8\+\_\+t}]{channel}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_aef8ec3f50c56b8981114c742486adae9}{}\label{class_motion_control_aef8ec3f50c56b8981114c742486adae9}
+
+
+Stops all the movement that is currently going on. 
+
+\# $<$ch$>$ P $<$pw$>$ $<$esc$>$ (A\+S\+C\+II 27) 
+\begin{DoxyParams}{Parameters}
+{\em channel} & Channel the servo is connected too. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!stop\+Servo@{stop\+Servo}}
+\index{stop\+Servo@{stop\+Servo}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{stop\+Servo(const uint8\+\_\+t channel)}{stopServo(const uint8_t channel)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::stop\+Servo (
+\begin{DoxyParamCaption}
+\item[{const uint8\+\_\+t}]{channel}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_a620288ede2a839574451dcfa5ff9c923}{}\label{class_motion_control_a620288ede2a839574451dcfa5ff9c923}
+
+
+Immidetly stops servo. 
+
+Other servo will move futher. S\+T\+OP $<$n$>$$<$cr$>$ 
+\begin{DoxyParams}{Parameters}
+{\em channel} & Channel the servo is connected too. \\
+\hline
+\end{DoxyParams}
+\index{Motion\+Control@{Motion\+Control}!stop\+Servo@{stop\+Servo}}
+\index{stop\+Servo@{stop\+Servo}!Motion\+Control@{Motion\+Control}}
+\subsubsection[{\texorpdfstring{stop\+Servo(const std\+::string name)}{stopServo(const std::string name)}}]{\setlength{\rightskip}{0pt plus 5cm}void Motion\+Control\+::stop\+Servo (
+\begin{DoxyParamCaption}
+\item[{const std\+::string}]{name}
+\end{DoxyParamCaption}
+)}\hypertarget{class_motion_control_af8136756f3c37e8d7850b3f320661e34}{}\label{class_motion_control_af8136756f3c37e8d7850b3f320661e34}
+
+
+Immidetly stops servo. 
+
+Other servo will move futher. S\+T\+OP $<$n$>$$<$cr$>$ 
+\begin{DoxyParams}{Parameters}
+{\em name} & Name of the connected servo. \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+\hyperlink{_motion_control_8hpp}{Motion\+Control.\+hpp}\item 
+\hyperlink{_motion_control_8cpp}{Motion\+Control.\+cpp}\end{DoxyCompactItemize}
