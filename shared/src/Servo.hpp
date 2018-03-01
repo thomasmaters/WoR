@@ -150,6 +150,14 @@ class Servo
     {
     }
 
+	uint16_t getMaxPulseWidth() const {
+		return maxPulseWidth;
+	}
+
+	uint16_t getMinPulseWidth() const {
+		return minPulseWidth;
+	}
+
   private:
     uint8_t channel;
     std::string name;

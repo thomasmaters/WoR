@@ -3,7 +3,9 @@
   <arg name="demo" default="false" />
   <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" />
 
-  <param name="robot_description" textfile="$(find robotsimulation)/urdf/lynxmotion_arm.urdf" />
+  <!--<param name="robot_description" textfile="$(find robotsimulation)/urdf/lynxmotion_arm.urdf.xarco" /> -->
+
+  <param name="robot_description"  command="$(find xacro)/xacro '$(find robotsimulation)/urdf/lynxmotion_arm.urdf.xarco'" />
   <param name="use_gui" value="$(arg gui)"/>
 
   <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />

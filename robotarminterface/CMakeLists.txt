@@ -41,7 +41,7 @@ add_executable(robotarm_interface_node
    src/MotionControl.cpp
    src/SerialControl.cpp
    src/RosCommunication.cpp
-   src/Servo.hpp
+   ../shared/src/Servo.hpp
    src/SmartQueue.hpp
 ) 
 

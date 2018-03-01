@@ -9,7 +9,7 @@
 #define MOTIONCONTROL_HPP_
 
 #include "MovementCommand.hpp"
-#include "Servo.hpp"
+#include "../../shared/src/Servo.hpp"
 #include "SmartQueue.hpp"
 #include "RosCommunication.hpp"
 

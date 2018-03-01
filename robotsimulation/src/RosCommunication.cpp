@@ -121,9 +121,9 @@ void RosCommunication::commandReceivedCallback(const robotsimulation::ssc32u_com
 			}
 
 			current_positions_[servo_item.first] += current_increase;
-			if(current_positions_[servo_item.first] < connected_servos_[servo_item.first].min_pulse_width_)
+			if(current_positions_[servo_item.first] < connected_servos_[servo_item.first].getMinPulseWidth())
 			{
-				current_positions_[servo_item.first] = connected_servos_[servo_item.first].min_pulse_width_;
+				current_positions_[servo_item.first] = connected_servos_[servo_item.first].getMinPulseWidth();
 			}
 			std::cout << "atdest: " << at_destination << " increase: " << current_increase << " pwmToGo: " << pwm_to_go << "   " << current_positions_[servo_item.first] << "," << servo_item.second.first << " angle: ";
 			std::cout << connected_servos_[servo_item.first].getDegreesFromPulseWidth(static_cast<int16_t>(current_positions_[servo_item.first])) << std::endl;

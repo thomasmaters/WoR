@@ -13,7 +13,7 @@
 #include "ros/ros.h"
 #include <vector>
 #include <map>
-#include "Servo.h"
+#include "../../shared/src/Servo.hpp"
 
 class RosCommunication
 {
