@@ -11,8 +11,10 @@
 #include <regex>
 #include <thread>
 
-JointStateConverter::JointStateConverter() : at_destination_(false), stopping_(false)
+JointStateConverter::JointStateConverter() : cancel_movement_(false), at_destination_(true), stopping_(false)
 {
+    connected_servos_ = getRosParamServoConfiguration();
+
     joint_state_msg_.name.resize(connected_servos_.size());
     joint_state_msg_.position.resize(connected_servos_.size());
     joint_state_msg_.name[0] = "base_link2turret";
@@ -28,10 +30,24 @@ JointStateConverter::JointStateConverter() : at_destination_(false), stopping_(f
     current_positions_[3] = 1500;
     current_positions_[4] = 1500;
     current_positions_[5] = 1500;
+
+    concurrent_joint_state_publish_thread_ = std::thread([this]() {
+        ros::Rate rate(FPS);
+        while (!stopping_)
+        {
+            if (at_destination_)
+            {
+                constructJointStateMessage();
+                rate.sleep();
+            }
+        }
+    });
 }
 
 void JointStateConverter::constructJointStateMessage()
 {
+    publish_mutex.lock();
+
     for (const std::pair<const uint8_t, double>& servo_item : current_positions_)
     {
         // TODO Joinstate messages houden geen rekening met het type van de joint in de simulatie. Dit geeft dus
@@ -43,14 +59,18 @@ void JointStateConverter::constructJointStateMessage()
     }
     joint_state_msg_.header.stamp = ros::Time::now();
     sendJointStateMessage(joint_state_msg_);
+
+    publish_mutex.unlock();
 }
 
 void JointStateConverter::moveToDesitnation(double movement_time,
                                             const std::map<int16_t, std::pair<int16_t, int16_t>>& desired_positions)
 {
+    ROS_INFO("Starting to move to destination.");
+    ROS_DEBUG_STREAM("Movement_time: " << movement_time << " desired_positions size: " << desired_positions.size());
     ros::Rate rate(FPS);
     // Move slowly to the destination.
-    while (movement_time > 0)
+    while (movement_time > 0 && !cancel_movement_ && !stopping_)
     {
         for (const std::pair<const int16_t, std::pair<int16_t, int16_t>>& servo_item : desired_positions)
         {
@@ -83,11 +103,14 @@ void JointStateConverter::moveToDesitnation(double movement_time,
             }
         }
 
+        rate.sleep();
+
         constructJointStateMessage();
         // Decrease time left.
         movement_time -= 1000 / FPS;
     }
     at_destination_ = true;
+    ROS_INFO("Reached destination");
 }
 
 void JointStateConverter::parseSsc32uCommand(const robotsimulation::ssc32u_command& msg)
@@ -121,7 +144,24 @@ void JointStateConverter::parseSsc32uCommand(const robotsimulation::ssc32u_comma
 
     if (isValidSsc32uCommand(movement_time, desired_positions))
     {
-        // TODO connect this somewhere
+        if (moving_thread_.joinable())
+        {
+            cancel_movement_ = true;
+            moving_thread_.join();
+            cancel_movement_ = false;
+        }
+        at_destination_ = false;
+        std::thread temp = std::thread([this, movement_time, desired_positions]() {
+            if (true)
+            {
+                moveToDesitnation(movement_time, desired_positions);
+            }
+        });
+        moving_thread_.swap(temp);
+    }
+    else
+    {
+        ROS_WARN("Invalid movement command received.");
     }
 }
 
@@ -146,9 +186,3 @@ void JointStateConverter::ssc32uCommandReceived(const robotsimulation::ssc32u_co
 JointStateConverter::~JointStateConverter()
 {
 }
-
-// std::cout << "atdest: " << at_destination_ << " increase: " << current_increase << " pwmToGo: " << pwm_to_go
-//          << "   " << current_positions_[servo_item.first] << "," << servo_item.second.first << " angle: ";
-// std::cout << connected_servos_[servo_item.first].getDegreesFromPulseWidth(
-//                 static_cast<int16_t>(current_positions_[servo_item.first]))
-//          << std::endl;

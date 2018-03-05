@@ -9,17 +9,26 @@
 
 #include "ssc32u_parser_to_jointstate.h"
 
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-    ros::init(argc, argv, "convert_node");
-
-    ros::NodeHandle nh;
-    if (!nh.hasParam("servos"))
+    try
     {
-        ROS_ERROR("Failed to load parameter 'servos' from the param server.");
-        return 1;
+        ros::init(argc, argv, "convert_node");
+
+        ros::NodeHandle node_handle;
+        if (!node_handle.hasParam("servos"))
+        {
+            ROS_ERROR("Failed to load parameter 'servos' from the param server.");
+            return 1;
+        }
+        JointStateConverter parser;
+
+        ros::spin();
+    }
+    catch (std::exception& e)
+    {
+        ROS_ERROR_STREAM("ssc32u_parser_node crashed because of: " << e.what());
     }
 
-    ros::spin();
     return 0;
 }

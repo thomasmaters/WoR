@@ -8,10 +8,11 @@
 #ifndef SRC_ROSCOMMUNICATION_H_
 #define SRC_ROSCOMMUNICATION_H_
 
-#include <map>
-#include <vector>
 #include "../../shared/src/Servo.hpp"
 #include "robotsimulation/ssc32u_command.h"
+
+#include <vector>
+
 #include "ros/ros.h"
 #include "sensor_msgs/JointState.h"
 

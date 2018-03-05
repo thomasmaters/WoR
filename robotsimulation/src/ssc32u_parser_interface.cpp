@@ -7,6 +7,8 @@
 
 #include "ssc32u_parser_interface.h"
 
+#include <map>
+
 Ssc32uParserInterface::Ssc32uParserInterface()
 {
     target_position_subscriber_ =

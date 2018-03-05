@@ -12,10 +12,13 @@
 #include "sensor_msgs/JointState.h"
 #include "ssc32u_parser_interface.h"
 
+#include <mutex>
+#include <thread>
+
 #include "ros/console.h"
 #include "ros/master.h"
 
-#define FPS 60
+#define FPS 2
 
 class JointStateConverter : public Ssc32uParserInterface
 {
@@ -24,6 +27,11 @@ class JointStateConverter : public Ssc32uParserInterface
 
     void constructJointStateMessage();
 
+    void ssc32uCommandReceived(const robotsimulation::ssc32u_command msg);
+
+    virtual ~JointStateConverter();
+
+  private:
     void moveToDesitnation(double movement_time,
                            const std::map<int16_t, std::pair<int16_t, int16_t>>& desired_positions);
 
@@ -32,16 +40,18 @@ class JointStateConverter : public Ssc32uParserInterface
     bool isValidSsc32uCommand(double movement_time,
                               const std::map<int16_t, std::pair<int16_t, int16_t>>& desired_positions) const;
 
-    void ssc32uCommandReceived(const robotsimulation::ssc32u_command msg);
-
-    virtual ~JointStateConverter();
-
   private:
     sensor_msgs::JointState joint_state_msg_;
 
     std::vector<Servo> connected_servos_;
     std::map<uint8_t, double> current_positions_;
 
+    std::thread moving_thread_;
+    std::thread concurrent_joint_state_publish_thread_;  /// Concurrently publishes the current positions of the servos
+                                                         /// on a topic.
+    std::mutex publish_mutex;
+
+    bool cancel_movement_;
     bool at_destination_;
     bool stopping_;
 };
