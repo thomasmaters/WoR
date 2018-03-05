@@ -38,7 +38,10 @@ include_directories(
 )
 
 add_executable(cli_node src/cli_node.cpp)
-add_executable(convert_node src/convert_node.cpp src/RosCommunication.cpp)
+add_executable(convert_node 
+	src/ssc32u_parser_node.cpp 
+	src/ssc32u_parser_interface.cpp
+	src/ssc32u_parser_to_jointstate.cpp)
 add_executable(beker_node src/cup_node.cpp)
 
 
