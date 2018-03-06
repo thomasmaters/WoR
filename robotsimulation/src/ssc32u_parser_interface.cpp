@@ -35,10 +35,11 @@ std::vector<Servo> Ssc32uParserInterface::getRosParamServoConfiguration() const
     try
     {
         std::vector<Servo> connected_servos;
-        XmlRpc::XmlRpcValue my_list;
-        subsriber_node_.getParam("servos", my_list);
+        XmlRpc::XmlRpcValue servo_config;
+        subsriber_node_.getParam("servos", servo_config);
 
-        for (std::map<std::string, XmlRpc::XmlRpcValue>::iterator it = my_list.begin(); it != my_list.end(); it++)
+        for (std::map<std::string, XmlRpc::XmlRpcValue>::iterator it = servo_config.begin(); it != servo_config.end();
+             it++)
         {
             if (it->second.size() != 10)
             {

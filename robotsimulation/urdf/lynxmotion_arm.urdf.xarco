@@ -1,6 +1,8 @@
 <?xml version="1.0"?>
 <robot name="lynxmotion_arm" xmlns:xacro="http://ros.org/wiki/xacro">
 	<xacro:property name="params" value="${load_yaml('../../shared/config/servo_config.yaml')}"/>
+	
+	<xacro:arg name="world_pos" default="0 0 0"/>
 
 	<xacro:property name="base_link_mass" value="0.1" />
 	<xacro:property name="base_link_length" value="0.04" />
@@ -74,6 +76,8 @@
 		</inertial>
 	</xacro:macro>
 
+	<link name="world">		
+	</link>
     <link name="base_link">
         <visual>
             <geometry>
@@ -160,6 +164,11 @@
         <xacro:collision_box mass="${gripper_mass}" width="${gripper_width}" height="${gripper_height}" depth="${gripper_depth}" xyz="${gripper_origin_xyz}" rpy="${gripper_origin_rpy}"/>	
     </link>
        
+    <joint name="world2base_link" type="fixed">
+    	<parent link="world" />
+    	<child link="base_link" />
+    	<origin xyz="$(arg world_pos)" rpy="0 0 0" />
+    </joint>   
     <joint name="base_link2turret" type="revolute">
         <parent link="base_link" />
         <child link="turret" />

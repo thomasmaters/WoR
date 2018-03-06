@@ -90,7 +90,7 @@ void JointStateConverter::moveToDesitnation(double movement_time,
                     current_increase = -pwm_to_go;
                 }
             }
-            else if (movement_time > 0)  // Do we still have time left
+            else
             {
                 pwm_to_go = (double)current_positions_[servo_item.first] - (double)servo_item.second.first;
                 current_increase = pwm_to_go / movement_time / FPS * -1000;
