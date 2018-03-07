@@ -1,8 +1,0 @@
-<map id="main.cpp" name="main.cpp">
-<area shape="rect" id="node3" href="$_ros_communication_8hpp.html" title="RosCommunication.hpp" alt="" coords="681,80,844,107"/>
-<area shape="rect" id="node4" href="$_motion_control_8hpp.html" title="MotionControl.hpp" alt="" coords="1288,162,1416,189"/>
-<area shape="rect" id="node23" href="$_serial_control_8hpp.html" title="SerialControl.hpp" alt="" coords="1728,244,1850,271"/>
-<area shape="rect" id="node5" href="$_movement_command_8hpp.html" title="MovementCommand.hpp" alt="" coords="1474,244,1642,271"/>
-<area shape="rect" id="node8" href="$_servo_8hpp.html" title="Servo.hpp" alt="" coords="1318,244,1399,271"/>
-<area shape="rect" id="node10" href="$_smart_queue_8hpp.html" title="SmartQueue.hpp" alt="" coords="1020,244,1140,271"/>
-</map>
