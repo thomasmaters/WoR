@@ -9,7 +9,6 @@
 
 #include <cmath>
 #include <regex>
-#include <thread>
 
 JointStateConverter::JointStateConverter() : cancel_movement_(false), at_destination_(true), stopping_(false)
 {
@@ -53,9 +52,7 @@ void JointStateConverter::constructJointStateMessage()
         // TODO Joinstate messages houden geen rekening met het type van de joint in de simulatie. Dit geeft dus
         // problemen bij de grijper omdat die in meters is.
         joint_state_msg_.position[servo_item.first] =
-            (connected_servos_[servo_item.first].getDegreesFromPulseWidth(static_cast<int16_t>(servo_item.second)) *
-             M_PI) /
-            180;
+            connected_servos_.at(servo_item.first).getJointStateFromPulseWidth(static_cast<int16_t>(servo_item.second));
     }
     joint_state_msg_.header.stamp = ros::Time::now();
     sendJointStateMessage(joint_state_msg_);
@@ -97,9 +94,9 @@ void JointStateConverter::moveToDesitnation(double movement_time,
             }
 
             current_positions_[servo_item.first] += current_increase;
-            if (current_positions_[servo_item.first] < connected_servos_[servo_item.first].getMinPulseWidth())
+            if (current_positions_[servo_item.first] < connected_servos_.at(servo_item.first).getMinPulseWidth())
             {
-                current_positions_[servo_item.first] = connected_servos_[servo_item.first].getMinPulseWidth();
+                current_positions_[servo_item.first] = connected_servos_.at(servo_item.first).getMinPulseWidth();
             }
         }
 

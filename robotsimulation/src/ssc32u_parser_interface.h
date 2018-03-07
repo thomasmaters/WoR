@@ -8,10 +8,10 @@
 #ifndef SRC_ROSCOMMUNICATION_H_
 #define SRC_ROSCOMMUNICATION_H_
 
-#include "../../shared/src/Servo.hpp"
+#include "../../shared/src/SimulationServo.hpp"
 #include "robotsimulation/ssc32u_command.h"
 
-#include <vector>
+#include <map>
 
 #include "ros/ros.h"
 #include "sensor_msgs/JointState.h"
@@ -27,7 +27,7 @@ class Ssc32uParserInterface
 
     void sendJointStateMessage(const sensor_msgs::JointState& msg) const;
 
-    std::vector<Servo> getRosParamServoConfiguration() const;
+    std::map<uint8_t, SimulationServo> getRosParamServoConfiguration() const;
 
   private:
     ros::NodeHandle subsriber_node_;

@@ -8,10 +8,11 @@
 #ifndef WOR_ROBOTSIMULATION_SRC_SSC32U_PARSER_TO_JOINTSTATE_H_
 #define WOR_ROBOTSIMULATION_SRC_SSC32U_PARSER_TO_JOINTSTATE_H_
 
-#include "../../shared/src/Servo.hpp"
+#include "../../shared/src/SimulationServo.hpp"
 #include "sensor_msgs/JointState.h"
 #include "ssc32u_parser_interface.h"
 
+#include <map>
 #include <mutex>
 #include <thread>
 
@@ -43,7 +44,7 @@ class JointStateConverter : public Ssc32uParserInterface
   private:
     sensor_msgs::JointState joint_state_msg_;
 
-    std::vector<Servo> connected_servos_;
+    std::map<uint8_t, SimulationServo> connected_servos_;
     std::map<uint8_t, double> current_positions_;
 
     std::thread moving_thread_;
