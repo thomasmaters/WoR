@@ -1,10 +1,10 @@
-#include "ros/ros.h"
-#include "RosCommunication.hpp"
 #include "MotionControl.hpp"
+#include "RosCommunication.hpp"
+#include "ros/ros.h"
 
-#include "SerialControl.hpp"
 #include <iostream>
 #include <thread>
+#include "SerialControl.hpp"
 
 // http://www.lynxmotion.com/p-1019-al5d-pltw-robotic-arm-kit.aspx
 // https://www.servocity.com/hs-485hb-servo (base)
@@ -16,50 +16,42 @@
 
 int main(int argc, char* argv[])
 {
-	ros::init(argc, argv, "robotarm_interface");
-//	Servo kaas = Servo(0, "base", -95, 95, 553, 2425, -90, 90, 0.22);
-//	Servo kaaz = Servo(1, "shoulder", -99, 99, 556, 2420, -30, 90, 0.19,true);
-//	Servo kaab = Servo(2, "elbow", 0, 202, 556, 2410, 0, 135, 0.28);
-//	Servo kaac = Servo(3, "wrist", -93, 93, 553, 2520, -90, 90, 0.24);
-//	Servo kaaz = Servo(4, "gripper", -93, 93, 553, 2520, -90, 90, 0.21);
-//	Servo kaad = Servo(5, "wrist rotate", -91, 90, 553, 2300, -90, 90, 0.16);
+    ros::init(argc, argv, "robotarm_interface");
+    // Can we start ros?
+    if (MotionControl::getInstance().init())
+    {
+        ROS_INFO("Inited motion controller.");
+        MotionControl::getInstance().setInterfaceState(interfaceStates::INIT);
 
-	//Can we start ros?
-	if(MotionControl::getInstance().init())
-	{
-		std::cout << "Inited motion controller." << std::endl;
-		MotionControl::getInstance().setInterfaceState(interfaceStates::INIT);
+        if (RosCommunication::getInstance().init())
+        {
+            ROS_INFO("Inited ros communication.");
+            // Start the serial communication and the motion controller.
+            if (SerialControl::getInstance().start("/dev/ttyUSB0", 9600))
+            {
+                ROS_INFO("Init completed correctly.");
+                MotionControl::getInstance().setInterfaceState(interfaceStates::IDLE);
+                MotionControl::getInstance().downloadStartupString("#0P1500;#1P1770;#2P1795;#3P796;#5P1527T3000");
+                MotionControl::getInstance().moveToPosition(defaultPositions::PARK);
+            }
+            else
+            {
+                ROS_WARN("Failed to open serial port, commands will only be send on rostopic.");
+                MotionControl::getInstance().setWaitForResponse(false);
+                MotionControl::getInstance().setInterfaceState(interfaceStates::IDLE);
+            }
+        }
+        else
+        {
+            ROS_ERROR("Coudln't start ros interface.");
+            MotionControl::getInstance().setInterfaceState(interfaceStates::INIT_ERROR);
+        }
+    }
+    else
+    {
+        ROS_ERROR("Coudln't initalize motion controller.");
+    }
 
-		if(RosCommunication::getInstance().init())
-		{
-			std::cout << "Inited ros communication." << std::endl;
-			//Start the serial communication and the motion controller.
-			if (SerialControl::getInstance().start("/dev/ttyUSB0", 9600))
-			{
-				std::cout << "Init completed" << std::endl;
-				MotionControl::getInstance().setInterfaceState(interfaceStates::IDLE);
-				MotionControl::getInstance().downloadStartupString("#0P1500;#1P1770;#2P1795;#3P796;#5P1527T3000");
-				MotionControl::getInstance().moveToPosition(defaultPositions::PARK);
-			}
-			else
-			{
-				std::cout << "Failed to init Serial communication." << std::endl;
-				MotionControl::getInstance().setInterfaceState(interfaceStates::INIT_ERROR);
-			}
-		}
-		else
-		{
-			std::cout << "Couldn't start ros interface." << std::endl;
-			MotionControl::getInstance().setInterfaceState(interfaceStates::INIT_ERROR);
-		}
-	}
-	else
-	{
-		std::cout << "Faileed to init motion controller." << std::endl;
-	}
-
-//	std::cout << MotionControl::getInstance().getServoCurrentPulseWidth(0) << std::endl;
-
-	ros::spin();
-	return 0;
+    ros::spin();
+    return 0;
 }

@@ -70,8 +70,7 @@ class SerialControl
      * (without '\\r' or '\n').
      * @return				Returns the response.
      **/
-    std::string writeAndRead(const std::string& message,
-                             const size_t responseSize);
+    std::string writeAndRead(const std::string& message, const size_t responseSize);
 
     /**
      * Writes a message to the serial port and waits(blocking) for a response of
@@ -81,8 +80,7 @@ class SerialControl
      * (without '\\r' or '\n').
      * @return				Returns the response as int.
      **/
-    int writeAndReadAsInt(const std::string& message,
-                          const size_t responseSize);
+    int writeAndReadAsInt(const std::string& message, const size_t responseSize);
 
     /**
      * Writes a message to the serial port and waits(blocking) for a response of
@@ -91,8 +89,7 @@ class SerialControl
      * @param untilChar		Reads from string until it reads this character.
      * @return				Returns the response.
      **/
-    std::string writeAndReadUntil(const std::string& message,
-                                  const char untilChar);
+    std::string writeAndReadUntil(const std::string& message, const char untilChar);
 
     /**
      * Writes a message to the serial port and waits(blocking) for a response of
@@ -101,8 +98,7 @@ class SerialControl
      * @param untilChar		Reads from string until it reads this character.
      * @return			Returns the response as int.
      **/
-    int writeAndReadUntilAsInt(const std::string& message,
-                               const char untilChar);
+    int writeAndReadUntilAsInt(const std::string& message, const char untilChar);
 
     virtual ~SerialControl();
 

@@ -8,11 +8,10 @@
 #ifndef MOTIONCONTROL_HPP_
 #define MOTIONCONTROL_HPP_
 
-#include "MovementCommand.hpp"
 #include "../../shared/src/Servo.hpp"
-#include "SmartQueue.hpp"
+#include "MovementCommand.hpp"
 #include "RosCommunication.hpp"
-
+#include "SmartQueue.hpp"
 
 #include <cstdint>
 #include <string>
@@ -20,16 +19,21 @@
 
 #define MAX_STARTUP_STRING_LENGTH 100
 
-enum defaultPositions { PARK, READY, STRAIGHT_UP };
+enum defaultPositions
+{
+    PARK,
+    READY,
+    STRAIGHT_UP
+};
 enum interfaceStates
 {
-	IDLE,
-	SENDING_COMMAND,
-	MOVING_ARM,
-	MOVING_FINISHED,
-	INIT,
-	INIT_ERROR,
-	EMERGENCY_STOP
+    IDLE,
+    SENDING_COMMAND,
+    MOVING_ARM,
+    MOVING_FINISHED,
+    INIT,
+    INIT_ERROR,
+    EMERGENCY_STOP
 };
 
 class MotionControl
@@ -58,8 +62,7 @@ class MotionControl
      * @param rotation	Rotation in degrees the servo has to move to.
      * @param speed		Speed in usec/s the servo will move.
      **/
-    void moveServo(const uint8_t channel, const uint16_t rotation,
-                   const uint16_t speed);
+    void moveServo(const uint8_t channel, const uint16_t rotation, const uint16_t speed);
 
     /**
      * Moves a single servo with a specific speed.
@@ -67,8 +70,7 @@ class MotionControl
      * @param rotation	Rotation in degrees the servo has to move to.
      * @param speed		Speed in usec/s the servo will move.
      **/
-    void moveServo(const std::string name, const uint16_t rotation,
-                   const uint16_t speed);
+    void moveServo(const std::string name, const uint16_t rotation, const uint16_t speed);
 
     /**
      * Moves a single servo in a spcified time.
@@ -76,16 +78,14 @@ class MotionControl
      * @param rotation	Rotation in degrees the servo has to move to.
      * @param time		Time in miliseconds the move has to take.
      **/
-    void moveServoTimed(const uint8_t channel, const uint16_t rotation,
-                        const uint16_t time);
+    void moveServoTimed(const uint8_t channel, const uint16_t rotation, const uint16_t time);
     /**
      * Moves a single servo in a spcified time.
      * @param name		Name of the connected servo.
      * @param rotation	Rotation in degrees the servo has to move to.
      * @param time		Time in miliseconds the move has to take.
      **/
-    void moveServoTimed(const std::string name, const uint16_t rotation,
-                        const uint16_t time);
+    void moveServoTimed(const std::string name, const uint16_t rotation, const uint16_t time);
 
     /**
      * Sends a movement command that moves multiple servo's at once to a
@@ -94,9 +94,7 @@ class MotionControl
      *rotation in degrees.
      * @param time		Time in miliseconds the move has to take.
      **/
-    void moveMultipleServosTimed(
-        const std::vector<std::pair<uint8_t, int16_t>> servoPositions,
-        const uint16_t time);
+    void moveMultipleServosTimed(const std::vector<std::pair<uint8_t, int16_t>> servoPositions, const uint16_t time);
 
     /**
      * Stops all the movement that is currently going on.
@@ -162,8 +160,7 @@ class MotionControl
      *starts.
      * @param speed 	Speed in usec/s the servo will move.
      **/
-    void addServoStartupPosition(const uint8_t channel, const uint16_t degrees,
-                                 const uint16_t speed);
+    void addServoStartupPosition(const uint8_t channel, const uint16_t degrees, const uint16_t speed);
 
     /**
      * Downloads the startup string to the controller.
@@ -201,43 +198,40 @@ class MotionControl
      **/
     virtual ~MotionControl();
 
-
     /**
      * Getter interfaceState.
      * @return Returns the current interfaceState.
      **/
-	interfaceStates getInterfaceState() const
-	{
-		return interfaceState;
-	}
+    interfaceStates getInterfaceState() const
+    {
+        return interfaceState;
+    }
 
-	/**
-	 * Setter interfaceState.
-	 * @param interfaceState A new interfaceState.
-	 **/
-	void setInterfaceState(interfaceStates interfaceState)
-	{
-		std::cout << "Interface state set to: " <<interfaceState << std::endl;
-		this->interfaceState = interfaceState;
+    /**
+     * Setter interfaceState.
+     * @param interfaceState A new interfaceState.
+     **/
+    void setInterfaceState(interfaceStates interfaceState);
+
+	void setWaitForResponse(bool waitForResponse) {
+		this->waitForResponse = waitForResponse;
 	}
 
   private:
     /**
      * Constructor.
      **/
-    MotionControl():
-    	interfaceState(interfaceStates::INIT)
-  {
-
-  }
+    MotionControl() : interfaceState(interfaceStates::INIT), waitForResponse(true)
+    {
+    }
 
     /**
      * Moves the servo, also checks if it is possible to go to that pulsewidth.
      * # <ch> P <pw> ?S??<spd>??T?<time> <cr>
      * TODO let it check for servo max speed.
      **/
-    void moveSingleServo(const uint8_t channel, const uint16_t pulseWidth,
-                         const uint16_t speed, const uint16_t time = 0);
+    void moveSingleServo(const uint8_t channel, const uint16_t pulseWidth, const uint16_t speed,
+                         const uint16_t time = 0);
 
     /**
      * Checks if a given channel is supported by the SSC-32U.
@@ -299,8 +293,7 @@ class MotionControl
      * @param value				Value to set the register value
      *to.
      **/
-    void setRegisterValue(const uint16_t registerPosition,
-                          const uint16_t value);
+    void setRegisterValue(const uint16_t registerPosition, const uint16_t value);
     /**
      * Resets all register values to there default values.
      * RDFLT <cr>
@@ -317,6 +310,7 @@ class MotionControl
     std::vector<Servo> connectedServos;
     std::string startupString;
     SmartQueue<MovementCommand> movementCommandQueue;
+    bool waitForResponse;
 };
 
 #endif /* MOTIONCONTROL_HPP_ */

@@ -18,6 +18,7 @@ include_directories(${Boost_INCLUDE_DIRS} ${catkin_INCLUDE_DIRS})
 add_message_files(
   FILES
   ssc32u_command.msg
+  ssc32u_feedback.msg
 )
 
 generate_messages(

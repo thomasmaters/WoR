@@ -6,6 +6,7 @@ find_package(catkin REQUIRED COMPONENTS
    rospy
    std_msgs
    message_generation
+   robotsimulation
 )
 
 find_package(Boost REQUIRED COMPONENTS system thread)
@@ -28,7 +29,6 @@ add_service_files(
 
 generate_messages(
    DEPENDENCIES
-   std_msgs
    robotarminterface
  )
 

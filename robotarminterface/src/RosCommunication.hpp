@@ -8,88 +8,93 @@
 #ifndef BEROEPSPRODUCT_1_INTERFACE_ROSCOMMUNICATION_HPP_
 #define BEROEPSPRODUCT_1_INTERFACE_ROSCOMMUNICATION_HPP_
 
-#include "ros/ros.h"
 #include "MotionControl.hpp"
 #include "robotarminterface/emergencyStopMsg.h"
 #include "robotarminterface/interfaceStateSrv.h"
-#include "robotarminterface/moveServoDefinedMsg.h"
-#include "robotarminterface/moveServo.h"
-#include "robotarminterface/moveSingleServoMsg.h"
 #include "robotarminterface/moveMultipleServosMsg.h"
-#include "std_msgs/String.h"
+#include "robotarminterface/moveServo.h"
+#include "robotarminterface/moveServoDefinedMsg.h"
+#include "robotarminterface/moveSingleServoMsg.h"
+#include "robotsimulation/ssc32u_command.h"
+
+#include "../../shared/src/Servo.hpp"
+#include "ros/ros.h"
 
 class RosCommunication
 {
-public:
-	/**
-	 * Initializes the ros communication.
-	 **/
-	bool init();
+  public:
+    /**
+     * Initializes the ros communication.
+     **/
+    bool init();
 
-	/**
-	 * Gets an RosCommunication instance.
-	 **/
-	static RosCommunication& getInstance();
+    /**
+     * Gets an RosCommunication instance.
+     **/
+    static RosCommunication& getInstance();
 
-	/**
-	 * Callback function for an interface state request.
-	 * @param req Request struct.
-	 * @param res Response struct.
-	 * @return Returns if ros can send the response back.
-	 **/
-	bool getInterfaceStateRequest(
-			robotarminterface::interfaceStateSrv::Request& req,
-			robotarminterface::interfaceStateSrv::Response& res);
+    /**
+     * Callback function for an interface state request.
+     * @param req Request struct.
+     * @param res Response struct.
+     * @return Returns if ros can send the response back.
+     **/
+    bool getInterfaceStateRequest(robotarminterface::interfaceStateSrv::Request& req,
+                                  robotarminterface::interfaceStateSrv::Response& res);
 
-	/**
-	 * Handler when it receives an moveServoDefinedMsg message.
-	 * @param msg Message type.
-	 **/
-	void moveServoToDefinedPosCallback(
-			const robotarminterface::moveServoDefinedMsg& msg);
+    /**
+     * Handler when it receives an moveServoDefinedMsg message.
+     * @param msg Message type.
+     **/
+    void moveServoToDefinedPosCallback(const robotarminterface::moveServoDefinedMsg& msg);
 
-	/**
-	 * Handler when it receives an moveSingleServoMsg message.
-	 * @param msg Message type.
-	 **/
-	void moveSingleServoCallback(
-			const robotarminterface::moveSingleServoMsg& msg);
+    /**
+     * Handler when it receives an moveSingleServoMsg message.
+     * @param msg Message type.
+     **/
+    void moveSingleServoCallback(const robotarminterface::moveSingleServoMsg& msg);
 
-	/**
-	 * Handler when it receives an moveMultipleServosMsg message.
-	 * @param msg Message type.
-	 **/
-	void moveMultipleServosCallback(
-			const robotarminterface::moveMultipleServosMsg& msg);
+    /**
+     * Handler when it receives an moveMultipleServosMsg message.
+     * @param msg Message type.
+     **/
+    void moveMultipleServosCallback(const robotarminterface::moveMultipleServosMsg& msg);
 
-	/**
-	 * Handler when it receives an emergencyStopMsg message.
-	 * @param msg Message type.
-	 **/
-	void emergencyStopCallback(const robotarminterface::emergencyStopMsg& msg);
+    /**
+     * Handler when it receives an emergencyStopMsg message.
+     * @param msg Message type.
+     **/
+    void emergencyStopCallback(const robotarminterface::emergencyStopMsg& msg);
 
-	/**
-	* Sends ssc32u command to a ros topic.
-	* @param command Command to send on topic.
-	**/
-	void sendSsc32uCommand(const std::string command);
+    /**
+    * Sends ssc32u command to a ros topic.
+    * @param command Command to send on topic.
+    **/
+    void sendSsc32uCommand(const std::string command);
 
-	virtual ~RosCommunication();
-private:
-	RosCommunication();
+    /**
+     * Retrieves servo configuration from the ros param server.
+     * @return Returns a vector with servo configurations.
+     */
+    std::vector<Servo> getRosParamServoConfiguration() const;
 
-	ros::NodeHandle serviceNode;
-	ros::NodeHandle subsriberNode;
-	ros::NodeHandle publisherNode;
+    virtual ~RosCommunication();
 
-	ros::ServiceServer interfaceStateService;
+  private:
+    RosCommunication();
 
-	ros::Subscriber moveServoToDefinedPositionSubscriber;
-	ros::Subscriber moveSingleServoSubscriber;
-	ros::Subscriber moveMultipleServosSubscriber;
-	ros::Subscriber emergencyStopSubscriber;
+    ros::NodeHandle serviceNode;
+    ros::NodeHandle subsriberNode;
+    ros::NodeHandle publisherNode;
 
-	ros::Publisher ssc32uCommandoPublisher;
+    ros::ServiceServer interfaceStateService;
+
+    ros::Subscriber moveServoToDefinedPositionSubscriber;
+    ros::Subscriber moveSingleServoSubscriber;
+    ros::Subscriber moveMultipleServosSubscriber;
+    ros::Subscriber emergencyStopSubscriber;
+
+    ros::Publisher ssc32uCommandoPublisher;
 };
 
 #endif /* BEROEPSPRODUCT_1_INTERFACE_ROSCOMMUNICATION_HPP_ */
