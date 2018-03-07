@@ -8,8 +8,8 @@
 #ifndef SERVO_HPP_
 #define SERVO_HPP_
 
+#include <cmath>
 #include <cstdint>
-#include <iostream>
 #include <string>
 
 class Servo
@@ -34,20 +34,61 @@ class Servo
      * @param maxSpeed			Speed in useq per 60 degrees.
      * @param inverted			If the servo is reversed.
      **/
-    Servo(uint8_t channel, std::string name, int16_t minRotation,
-          int16_t maxRotation, uint16_t minPulseWidth, uint16_t maxPulseWidth,
-          int16_t minSafeRotation, int16_t maxSafeRotation, double maxSpeed, bool inverted = false)
-        : channel(channel)
-        , name(name)
-        , minRotation(minRotation)
-        , maxRotation(maxRotation)
-        , minPulseWidth(minPulseWidth)
-        , maxPulseWidth(maxPulseWidth)
-        , minSafeRotation(minSafeRotation)
-        , maxSafeRotation(maxSafeRotation)
-        , maxSpeed(maxSpeed)
-  	  	, inverted(inverted)
+    Servo(uint8_t channel, std::string name, double_t minRotation, double_t maxRotation, uint16_t minPulseWidth,
+          uint16_t maxPulseWidth, double_t minSafeRotation, double_t maxSafeRotation, double_t maxSpeed,
+          bool inverted = false)
+      : channel(channel)
+      , name(name)
+      , minRotation(minRotation)
+      , maxRotation(maxRotation)
+      , minPulseWidth(minPulseWidth)
+      , maxPulseWidth(maxPulseWidth)
+      , minSafeRotation(minSafeRotation)
+      , maxSafeRotation(maxSafeRotation)
+      , maxSpeed(maxSpeed)
+      , inverted(inverted)
     {
+    }
+
+    /**
+     * Copy constructor
+     */
+    Servo(const Servo& other)
+      : channel(other.channel)
+      , name(other.name)
+      , minRotation(other.minRotation)
+      , maxRotation(other.maxRotation)
+      , minPulseWidth(other.minPulseWidth)
+      , maxPulseWidth(other.maxPulseWidth)
+      , minSafeRotation(other.minSafeRotation)
+      , maxSafeRotation(other.maxSafeRotation)
+      , maxSpeed(other.maxSpeed)
+      , inverted(other.inverted)
+    {
+    }
+
+    /**
+     * Assignment operator.
+     */
+    Servo& operator=(const Servo& other)
+    {
+        if (&other == this)
+        {
+            return *this;
+        }
+
+        channel = other.channel;
+        name = other.name;
+        minRotation = other.minRotation;
+        maxRotation = other.maxRotation;
+        minPulseWidth = other.minPulseWidth;
+        maxPulseWidth = other.maxPulseWidth;
+        minSafeRotation = other.minSafeRotation;
+        maxSafeRotation = other.maxSafeRotation;
+        maxSpeed = other.maxSpeed;
+        inverted = other.inverted;
+
+        return *this;
     }
 
     /**
@@ -57,8 +98,8 @@ class Servo
      **/
     bool canMoveToDegrees(int16_t degrees) const
     {
-        return degrees >= minRotation && degrees <= maxRotation &&
-               degrees >= minSafeRotation && degrees <= maxSafeRotation;
+        return degrees >= minRotation && degrees <= maxRotation && degrees >= minSafeRotation &&
+               degrees <= maxSafeRotation;
     }
 
     /**
@@ -77,25 +118,49 @@ class Servo
      * @param	pulseWidth	Pulse width in usec.
      * @return	Returns the rotation in degrees corresponding that pulse width.
      **/
-    int16_t getDegreesFromPulseWidth(uint16_t pulseWidth) const
+    virtual double_t getDegreesFromPulseWidth(uint16_t pulseWidth) const
     {
-        if (!canMoveToPulseWidth(pulseWidth)) {
+        if (!canMoveToPulseWidth(pulseWidth))
+        {
             return 0;
         }
 
-        if(inverted)
+        if (inverted)
         {
-        	return (((double)minRotation - maxRotation) /
-					(maxPulseWidth - minPulseWidth)) *
-					   (pulseWidth - minPulseWidth) +
-				   maxRotation;
+            return ((minRotation - maxRotation) / (maxPulseWidth - minPulseWidth)) * (pulseWidth - minPulseWidth) +
+                   maxRotation;
         }
         else
         {
-			return (((double)maxRotation - minRotation) /
-					(maxPulseWidth - minPulseWidth)) *
-					   (pulseWidth - minPulseWidth) +
-				   minRotation;
+            return ((maxRotation - minRotation) / (maxPulseWidth - minPulseWidth)) * (pulseWidth - minPulseWidth) +
+                   minRotation;
+        }
+    }
+
+    /**
+     * Converts a pulse width to radians.
+     * Returns 0 if the conversion is not possible.
+     * @param pulseWidth Pulse width in usec.
+     * @return Returns the rotation in radians corresponding with the given pulse width.
+     */
+    virtual double_t getRadiansFromPulseWidth(uint16_t pulseWidth) const
+    {
+        if (!canMoveToPulseWidth(pulseWidth))
+        {
+            return 0;
+        }
+
+        if (inverted)
+        {
+            return (((minRotation - maxRotation) / (maxPulseWidth - minPulseWidth)) * (pulseWidth - minPulseWidth) +
+                    maxRotation) *
+                   M_PI / 180;
+        }
+        else
+        {
+            return (((maxRotation - minRotation) / (maxPulseWidth - minPulseWidth)) * (pulseWidth - minPulseWidth) +
+                    minRotation) *
+                   M_PI / 180;
         }
     }
 
@@ -107,25 +172,21 @@ class Servo
      **/
     uint16_t getPulseWidthFromDegrees(int16_t degrees) const
     {
-        if (!canMoveToDegrees(degrees)) {
+        if (!canMoveToDegrees(degrees))
+        {
             return 0;
         }
 
-        if(inverted)
+        if (inverted)
         {
-            return (((double)minPulseWidth - maxPulseWidth) /
-                    (maxRotation - minRotation)) *
-                       (degrees - minRotation) +
-					   maxPulseWidth;
+            return (((double)minPulseWidth - maxPulseWidth) / (maxRotation - minRotation)) * (degrees - minRotation) +
+                   maxPulseWidth;
         }
         else
         {
-            return (((double)maxPulseWidth - minPulseWidth) /
-                    (maxRotation - minRotation)) *
-                       (degrees - minRotation) +
+            return (((double)maxPulseWidth - minPulseWidth) / (maxRotation - minRotation)) * (degrees - minRotation) +
                    minPulseWidth;
         }
-
     }
 
     /**
@@ -150,29 +211,31 @@ class Servo
     {
     }
 
-	uint16_t getMaxPulseWidth() const {
-		return maxPulseWidth;
-	}
+    uint16_t getMaxPulseWidth() const
+    {
+        return maxPulseWidth;
+    }
 
-	uint16_t getMinPulseWidth() const {
-		return minPulseWidth;
-	}
+    uint16_t getMinPulseWidth() const
+    {
+        return minPulseWidth;
+    }
 
-  private:
+  protected:
     uint8_t channel;
     std::string name;
 
-    int16_t minRotation;
-    int16_t maxRotation;
+    double_t minRotation;
+    double_t maxRotation;
 
     uint16_t minPulseWidth;
     uint16_t maxPulseWidth;
 
-    int16_t minSafeRotation;
-    int16_t maxSafeRotation;
+    double_t minSafeRotation;
+    double_t maxSafeRotation;
 
     // per 60 degrees
-    double maxSpeed;
+    double_t maxSpeed;
 
     bool inverted;
 };

@@ -9,4 +9,4 @@ servos:
   gripper: [4, "gripper", -90, 90, 700, 2400, -90, 90, 0.16,false]
   wrist_rotate: [5, "wrist_rotate", -90, 90, 700, 2400, -90, 90, 0.16,false]
 sim_servos:
-  gripper: [-0.02, 0.02] 
+  gripper: [3, -0.02, 0.02] 
