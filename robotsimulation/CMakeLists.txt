@@ -39,7 +39,7 @@ include_directories(
 )
 
 add_executable(cli_node src/cli_node.cpp)
-add_executable(convert_node 
+add_executable(ssc32u_controller_node 
 	src/ssc32u_parser_node.cpp 
 	src/ssc32u_parser_interface.cpp
 	src/ssc32u_parser_to_jointstate.cpp)
@@ -47,14 +47,14 @@ add_executable(beker_node src/cup_node.cpp)
 
 
 add_dependencies(cli_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
-add_dependencies(convert_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(ssc32u_controller_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(beker_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
 target_link_libraries(cli_node
   ${catkin_LIBRARIES}
 )
 
-target_link_libraries(convert_node
+target_link_libraries(ssc32u_controller_node
   ${catkin_LIBRARIES}
 )
 
