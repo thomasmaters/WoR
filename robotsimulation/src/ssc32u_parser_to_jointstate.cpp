@@ -14,14 +14,13 @@ JointStateConverter::JointStateConverter() : cancel_movement_(false), at_destina
 {
     connected_servos_ = getRosParamServoConfiguration();
 
-    joint_state_msg_.name.resize(connected_servos_.size());
     joint_state_msg_.position.resize(connected_servos_.size());
-    joint_state_msg_.name[0] = "base_link2turret";
-    joint_state_msg_.name[1] = "turret2upperarm";
-    joint_state_msg_.name[2] = "upperarm2forearm";
-    joint_state_msg_.name[5] = "wrist2hand";
-    joint_state_msg_.name[4] = "gripper_left2hand";
-    joint_state_msg_.name[3] = "forearm2wrist";
+    joint_state_msg_.name.push_back("base_link2turret");
+    joint_state_msg_.name.push_back("turret2upperarm");
+    joint_state_msg_.name.push_back("upperarm2forearm");
+    joint_state_msg_.name.push_back("forearm2wrist");
+    joint_state_msg_.name.push_back("wrist2hand");
+    joint_state_msg_.name.push_back("gripper_left2hand");
 
     current_positions_[0] = 1500;
     current_positions_[1] = 1500;
@@ -49,8 +48,6 @@ void JointStateConverter::constructJointStateMessage()
 
     for (const std::pair<const uint8_t, double>& servo_item : current_positions_)
     {
-        // TODO Joinstate messages houden geen rekening met het type van de joint in de simulatie. Dit geeft dus
-        // problemen bij de grijper omdat die in meters is.
         joint_state_msg_.position[servo_item.first] =
             connected_servos_.at(servo_item.first).getJointStateFromPulseWidth(static_cast<int16_t>(servo_item.second));
     }

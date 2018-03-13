@@ -168,7 +168,15 @@ Visualization Manager:
       Marker Topic: /cup
       Name: Marker
       Namespaces:
-        cup: true
+        {}
+      Queue Size: 100
+      Value: true
+    - Class: rviz/Marker
+      Enabled: true
+      Marker Topic: /cup_frituur
+      Name: Marker
+      Namespaces:
+        frituur: true
       Queue Size: 100
       Value: true
   Enabled: true
@@ -211,10 +219,10 @@ Visualization Manager:
       Invert Z Axis: false
       Name: Current View
       Near Clip Distance: 0.00999999978
-      Pitch: 0.564795434
+      Pitch: 0.759795427
       Target Frame: <Fixed Frame>
       Value: Orbit (rviz)
-      Yaw: 4.3754158
+      Yaw: 5.49542236
     Saved: ~
 Window Geometry:
   Displays:

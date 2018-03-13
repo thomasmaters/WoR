@@ -19,6 +19,7 @@ add_message_files(
   FILES
   ssc32u_command.msg
   ssc32u_feedback.msg
+  cup_data.msg
 )
 
 generate_messages(
@@ -43,7 +44,10 @@ add_executable(ssc32u_controller_node
 	src/ssc32u_parser_node.cpp 
 	src/ssc32u_parser_interface.cpp
 	src/ssc32u_parser_to_jointstate.cpp)
-add_executable(beker_node src/cup_node.cpp)
+add_executable(beker_node 
+	src/virtual_cup_node.cpp
+	src/virtual_cup.cpp
+	src/virtual_cup_interface.cpp)
 
 
 add_dependencies(cli_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})

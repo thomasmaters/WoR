@@ -3,13 +3,13 @@
   <arg name="demo" default="false" />
   <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" />
 
-  <param name="robot_description"  command="$(find xacro)/xacro '$(find robotsimulation)/urdf/lynxmotion_arm.urdf.xarco' world_pos:='0.1 0 0'" />
+  <param name="robot_description"  command="$(find xacro)/xacro '$(find robotsimulation)/urdf/lynxmotion_arm.urdf.xarco' world_pos:='0 0 0'" />
   <param name="use_gui" value="$(arg gui)"/>
 
   <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
   <node name="beker_node" pkg="robotsimulation" type="beker_node" launch-prefix="xterm -e" />
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find robotsimulation)/config/config.rviz" required="true" />
-  <node name="convert_node" pkg="robotsimulation" type="convert_node" launch-prefix="xterm -e" />
+  <node name="ssc32u_controller_node" pkg="robotsimulation" type="ssc32u_controller_node" launch-prefix="xterm -e" />
   <node if="$(arg demo)" name="cli_node" pkg="robotsimulation" type="cli_node" launch-prefix="xterm -e" />
 </launch>
