@@ -174,12 +174,12 @@
         <child link="turret" />
         <origin xyz="0 0 0.045" rpy="0 0 0" />
         <limit effort="1000.0" lower="${(params['servos']['base'][2]) * pi / 180}" upper="${(params['servos']['base'][3]) * pi / 180}" velocity="0.5" />
-        <axis xyz="0 0 -1" />
+        <axis xyz="0 0 1" />
     </joint>
     <joint name="turret2upperarm" type="revolute">
         <parent link="turret" />
         <child link="upperarm" />
-        <origin xyz="0 0 0.02" rpy="0 0 0" />
+        <origin xyz="0 0 0.02" rpy="0 -1.57 0" />
         <limit effort="1000.0" lower="${(params['servos']['shoulder'][2]) * pi / 180}" upper="${(params['servos']['shoulder'][3]) * pi / 180}" velocity="0.5" />
         <axis xyz="0 1 0" />
     </joint>
@@ -206,14 +206,14 @@
         <parent link="hand" />
         <child link="gripper_left" />
         <origin xyz="0 0.025 0.025" rpy="0 0 0" />
-        <limit effort="1000.0" lower="${params['sim_servos']['gripper'][0]}" upper="${params['sim_servos']['gripper'][1]}" velocity="0.5" />
+        <limit effort="1000.0" lower="${params['sim_servos']['gripper'][1]}" upper="${params['sim_servos']['gripper'][2]}" velocity="0.5" />
         <axis xyz="0 -1 0" />
     </joint>
     <joint name="gripper_right2hand" type="prismatic">
         <parent link="hand" />
         <child link="gripper_right" />
         <origin xyz="0 -0.025 0.025" rpy="0 0 0" />
-        <limit effort="1000.0" lower="${params['sim_servos']['gripper'][1]}" upper="${params['sim_servos']['gripper'][0]}" velocity="0.5" />
+        <limit effort="1000.0" lower="${params['sim_servos']['gripper'][2]}" upper="${params['sim_servos']['gripper'][1]}" velocity="0.5" />
         <axis xyz="0 1 0" />
         <mimic joint="gripper_left2hand" multiplier="1" offset="0"/>
     </joint>
