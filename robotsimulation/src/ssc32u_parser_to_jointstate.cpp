@@ -107,6 +107,7 @@ void JointStateConverter::moveToDesitnation(double movement_time,
     ROS_INFO("Reached destination");
 }
 
+// TODO: Kijk of de commando die geparsed wordt wel pwm waarden hebben die binnen de toegestane ranges vallen.
 void JointStateConverter::parseSsc32uCommand(const robotsimulation::ssc32u_command& msg)
 {
     //<servoNumber, pair<toAngle, speed>>
