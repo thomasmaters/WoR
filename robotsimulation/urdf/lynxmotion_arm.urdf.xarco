@@ -159,7 +159,9 @@
                 <box size="${gripper_width} ${gripper_height} ${gripper_depth}" />
             </geometry>
             <origin xyz="${gripper_origin_xyz}" rpy="${gripper_origin_rpy}" />
-            <material name="green" />
+            <material name="red" >
+                <color rgba="1 0 0 1" />
+            </material>
         </visual>
         <xacro:collision_box mass="${gripper_mass}" width="${gripper_width}" height="${gripper_height}" depth="${gripper_depth}" xyz="${gripper_origin_xyz}" rpy="${gripper_origin_rpy}"/>	
     </link>

@@ -34,6 +34,7 @@ tf::StampedTransform VirtualCupInterface::getTransform(const std::string& frame,
     }
     catch (std::exception& e)
     {
+        ROS_WARN_STREAM(e.what());
         // std::cout << e.what() << std::endl;
     }
 

@@ -30,7 +30,8 @@ class Cup : public VirtualCupInterface
         IDLE,
         FALLING,
         GRABBED,
-        PUSHED
+        PUSHED,
+        TIPPED
     };
 
     enum GripperToCupState
@@ -40,9 +41,11 @@ class Cup : public VirtualCupInterface
         CENTER = 0
     };
 
-    Cup(const std::string& a_namespace);
+    Cup(const std::string& a_namespace, float cup_x = 0, float cup_y = 0, float cup_z = 0);
 
     void loop();
+
+    void updateCupData();
 
     std::string cupStateToString();
 
@@ -63,6 +66,10 @@ class Cup : public VirtualCupInterface
 
     void applyGravity();
 
+    double calculateSpeed(const tf::Vector3& old_pos, const tf::Vector3& new_pos);
+
+    double calculateAcceleration(double old_speed, double new_speed);
+
     virtual ~Cup();
 
   private:
@@ -73,10 +80,13 @@ class Cup : public VirtualCupInterface
     std::string namespace_;  /// Unique namespace so we can have multiple markers.
 
     double fall_velocity_;
+    double acceleration_;
+    double velocity_;
 
     visualization_msgs::Marker marker_;
-    //    visualization_msgs::Marker test_marker_;
     robotsimulation::cup_data cup_data_;
+
+    ros::Time last_frame_time_;
 };
 
 #endif /* WOR_ROBOTSIMULATION_SRC_VIRTUAL_CUP_H_ */

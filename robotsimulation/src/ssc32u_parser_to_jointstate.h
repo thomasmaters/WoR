@@ -19,7 +19,7 @@
 #include "ros/console.h"
 #include "ros/master.h"
 
-#define FPS 2
+#define FPS 50
 
 class JointStateConverter : public Ssc32uParserInterface
 {

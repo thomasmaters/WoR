@@ -6,29 +6,27 @@
  */
 
 #include "virtual_cup.h"
+#include <thread>
 
-const tf::Matrix3x3 left_rotation_matrix =
-    tf::Matrix3x3(1, 0, 0, 0, std::cos(-90), -std::sin(-90), 0, std::sin(-90), std::cos(-90));
-
-const tf::Matrix3x3 up_rotation_matrix =
-    tf::Matrix3x3(std::cos(90), 0, std::sin(90), 0, 1, 0, -std::sin(90), 0, std::cos(90));
-
-const tf::Matrix3x3 forward_rotation_matrix =
-    tf::Matrix3x3(1, 0, 0, 0, std::cos(-90), -std::sin(-90), 0, std::sin(-90), std::cos(-90));
-
-Cup::Cup(const std::string& a_namespace)
-  : VirtualCupInterface(a_namespace), cup_state(Cup::CupState::IDLE), namespace_(a_namespace), fall_velocity_(0)
+Cup::Cup(const std::string& a_namespace, float cup_x, float cup_y, float cup_z)
+  : VirtualCupInterface(a_namespace)
+  , cup_origin_(cup_x, cup_y, cup_z)
+  , cup_center_(cup_x, cup_y, cup_z + CUP_HEIGHT / 2)
+  , cup_state(Cup::CupState::IDLE)
+  , namespace_(a_namespace)
+  , fall_velocity_(0)
+  , acceleration_(0)
+  , velocity_(0)
 {
-    // TODO Maken we de cup relatief aan de robotarm of de wereld?
     marker_.header.frame_id = "world";
     marker_.header.stamp = ros::Time::now();
     marker_.ns = namespace_;
     marker_.id = 0;
     marker_.type = visualization_msgs::Marker::ARROW;
 
-    marker_.pose.position.x = 0.35;
-    marker_.pose.position.y = 0;
-    marker_.pose.position.z = 0.1;
+    marker_.pose.position.x = cup_x;
+    marker_.pose.position.y = cup_y;
+    marker_.pose.position.z = cup_z;
     marker_.pose.orientation.x = 0.0;
     marker_.pose.orientation.y = -0.707;
     marker_.pose.orientation.z = 0.0;
@@ -43,39 +41,17 @@ Cup::Cup(const std::string& a_namespace)
     marker_.color.b = 0.75f;
     marker_.color.a = 1.0;
 
-    //    test_marker_.header.frame_id = "world";
-    //    test_marker_.header.stamp = ros::Time::now();
-    //    test_marker_.ns = "test_marker";
-    //    test_marker_.id = 1;
-    //    test_marker_.type = visualization_msgs::Marker::LINE_STRIP;
-    //
-    //    test_marker_.pose.position.x = 0;
-    //    test_marker_.pose.position.y = 0;
-    //    test_marker_.pose.position.z = 0;
-    //    test_marker_.pose.orientation.x = 0.0;
-    //    test_marker_.pose.orientation.y = 0.0;
-    //    test_marker_.pose.orientation.z = 0.0;
-    //    test_marker_.pose.orientation.w = 1.0;
-    //
-    //    geometry_msgs::Point test;
-    //    test.x = 0;
-    //    test.y = 0;
-    //    test.z = 0;
-    //    test_marker_.points.push_back(test);
-    //    test_marker_.points.push_back(test);
-    //
-    //    test_marker_.scale.x = CUP_HEIGHT;  // Length
-    //    test_marker_.scale.y = CUP_RADIUS;  // Width
-    //    test_marker_.scale.z = CUP_RADIUS;  // Height
-    //
-    //    test_marker_.color.r = 0.0f;
-    //    test_marker_.color.g = 0.95f;
-    //    test_marker_.color.b = 0.75f;
-    //    test_marker_.color.a = 1.0;
+    cup_data_.acceleration = acceleration_;
+    cup_data_.state = cup_state;
+    cup_data_.velocity = velocity_;
+
+    last_frame_time_ = ros::Time(0);
 }
 
 void Cup::loop()
 {
+    int skipped_frames = 0;
+
     ros::Rate rate(FPS);
     while (ros::ok())
     {
@@ -86,7 +62,22 @@ void Cup::loop()
         tf::StampedTransform world_2_gripper_right = getTransform("/world", "/gripper_right");
         tf::StampedTransform world_2_grip_point = getTransform("/world", "/grip_point");
 
-        std::cout << cupStateToString() << std::endl;
+        if (last_frame_time_ == world_2_grip_point.stamp_)
+        {
+            // ROS_WARN("Frame time did not update in time.");
+            rate.sleep();
+            skipped_frames++;
+            continue;
+        }
+        else
+        {
+            ROS_INFO_STREAM("Skipped: " << skipped_frames << " frames.");
+            skipped_frames = 0;
+        }
+
+        last_frame_time_ = world_2_grip_point.stamp_;
+
+        //        std::cout << cupStateToString() << std::endl;
 
         switch (cup_state)
         {
@@ -124,13 +115,31 @@ void Cup::loop()
                     cup_state = Cup::CupState::IDLE;
                 }
                 break;
+            case Cup::CupState::TIPPED:
+                break;
             default:
                 break;
         }
         rate.sleep();
+
+        marker_.header.stamp = ros::Time::now();
         sendMarkerData(marker_);
-        //        sendMarkerData(test_marker_);
+        updateCupData();
     }
+}
+
+void Cup::updateCupData()
+{
+    double temp_velocity = calculateSpeed(
+        cup_origin_, tf::Vector3(marker_.pose.position.x, marker_.pose.position.y, marker_.pose.position.z));
+    acceleration_ = calculateAcceleration(velocity_, temp_velocity);
+    velocity_ = temp_velocity;
+
+    cup_data_.acceleration = acceleration_;
+    cup_data_.state = cup_state;
+    cup_data_.velocity = velocity_;
+
+    sendCupData(cup_data_);
 }
 
 std::string Cup::cupStateToString()
@@ -164,9 +173,6 @@ bool Cup::checkForCollision(const tf::StampedTransform& gripper_left, const tf::
 {
     GripperToCupState leftGripperState = getDirectionToTransform(gripper_left);
     GripperToCupState rightGripperState = getDirectionToTransform(gripper_right);
-
-    //    std::cout << "Left gripper: " << (leftGripperState == LEFT ? "LEFT" : "RIGHT") << std::endl;
-    //    std::cout << "Right gripper: " << (rightGripperState == LEFT ? "LEFT" : "RIGHT") << std::endl;
 
     return (cup_center_.distance(gripper_left.getOrigin()) < CUP_TO_GRIPPER_COLLISION &&
             leftGripperState == Cup::GripperToCupState::RIGHT) ||
@@ -207,15 +213,12 @@ bool Cup::canBeGrabbed(const tf::StampedTransform& grip_point, const tf::Stamped
 
 void Cup::applyGrabbing(const tf::StampedTransform& grip_point, const tf::StampedTransform& gripper_left)
 {
-    //    std::cout << "Distance cup to gripperleft: " << grip_point.getOrigin().distance(gripper_left.getOrigin())
-    //              << std::endl;
-    if (canBeGrabbed(grip_point, gripper_left))
-    {
-        marker_.pose.position.x = grip_point.getOrigin().x();
-        marker_.pose.position.y = grip_point.getOrigin().y();
-        marker_.pose.position.z = grip_point.getOrigin().z() - CUP_HEIGHT / 2;
-    }
-    else
+    marker_.pose.position.x = grip_point.getOrigin().x();
+    marker_.pose.position.y = grip_point.getOrigin().y();
+    marker_.pose.position.z = grip_point.getOrigin().z() - CUP_HEIGHT / 2;
+
+    // Is the gripper to wide open?
+    if (grip_point.getOrigin().distance(gripper_left.getOrigin()) > 0.045)
     {
         cup_state = Cup::CupState::IDLE;
     }
@@ -237,6 +240,10 @@ void Cup::applyGravity()
         marker_.pose.position.z -= fall_velocity_ * (1.0 / FPS);
         if (marker_.pose.position.z < 0)
         {
+            // Enable this to demo rqt plot of acceleration and velocity.
+            //            fall_velocity_ = 0;
+            //            velocity_ = 0;
+            //            acceleration_ = 0;
             marker_.pose.position.z = 0;
         }
     }
@@ -247,18 +254,25 @@ bool Cup::canFall()
     return marker_.pose.position.z > 0 /* && cup_state != Cup::CupState::GRABBED*/;
 }
 
-void calculateSpeed(const tf::Vector3& old_pos, const tf::Vector3& new_pos)
+double Cup::calculateSpeed(const tf::Vector3& old_pos, const tf::Vector3& new_pos)
 {
-    double distance = old_pos.distance(new_pos);
+    double distance = std::abs(old_pos.distance(new_pos));
+
+    //    std::cout << "Distance: " << distance << " pos: " << old_pos.x() << "," << old_pos.y() << "," << old_pos.z()
+    //              << " - " << new_pos.x() << "," << new_pos.y() << "," << new_pos.z() << std::endl;
 
     // Snelheid in m/s over 1 frame.
-    double speed = distance / (1 / FPS);
+    //    if (distance == 0)
+    //    {
+    //        return velocity_;
+    //    }
+    return distance / (1.0 / FPS);
 }
 
-void calculateAcceleration(double old_speed, double new_speed)
+double Cup::calculateAcceleration(double old_speed, double new_speed)
 {
     // Versnelling in m/s^2
-    double acceleration = (new_speed - old_speed) / (1 / FPS);
+    return (new_speed - old_speed) / (1.0 / FPS);
 }
 
 Cup::~Cup()
