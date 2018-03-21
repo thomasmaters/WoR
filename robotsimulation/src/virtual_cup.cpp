@@ -8,14 +8,14 @@
 #include "virtual_cup.h"
 #include <thread>
 
-const tf::Quaternion straight_up = tf::Quaternion(0.0, -0.707, 0.0, 0.707);
-const tf::Quaternion straight_down = tf::Quaternion(0.0, 0.707, 0.0, 0.707);
+const tf::Quaternion STRAIGHT_UP = tf::Quaternion(0.0, -0.707, 0.0, 0.707);
+const tf::Quaternion STRAIGHT_DOWN = tf::Quaternion(0.0, 0.707, 0.0, 0.707);
 
 Cup::Cup(const std::string& a_namespace, float cup_x, float cup_y, float cup_z)
   : VirtualCupInterface(a_namespace)
   , cup_origin_(cup_x, cup_y, cup_z)
   , cup_center_(cup_x, cup_y, cup_z + CUP_HEIGHT / 2)
-  , cup_state(Cup::CupState::IDLE)
+  , cup_state_(Cup::CupState::IDLE)
   , namespace_(a_namespace)
   , fall_velocity_(0)
   , acceleration_(0)
@@ -78,13 +78,13 @@ void Cup::loop()
 
         last_frame_time_ = world_2_grip_point.stamp_;
 
-        switch (cup_state)
+        switch (cup_state_)
         {
             case Cup::CupState::FALLING:
                 if (!canFall())
                 {
                     fall_velocity_ = 0;
-                    cup_state = Cup::CupState::IDLE;
+                    cup_state_ = Cup::CupState::IDLE;
                     break;
                 }
                 applyGravity();
@@ -94,34 +94,34 @@ void Cup::loop()
                 break;
             case Cup::CupState::IDLE:
                 // If the cup is pushed a little, rotate it back up.
-                rotateMarkerToQuaternion(straight_up, 0.2);
+                rotateMarkerToQuaternion(STRAIGHT_UP, 0.2);
                 if (canFall())
                 {
-                    cup_state = Cup::CupState::FALLING;
+                    cup_state_ = Cup::CupState::FALLING;
                 }
                 if (checkForCollision(world_2_gripper_left, world_2_gripper_right))
                 {
-                    cup_state = Cup::CupState::PUSHED;
+                    cup_state_ = Cup::CupState::PUSHED;
                     break;
                 }
                 if (canBeGrabbed(world_2_grip_point, world_2_gripper_left))
                 {
-                    cup_state = Cup::CupState::GRABBED;
+                    cup_state_ = Cup::CupState::GRABBED;
                 }
                 break;
             case Cup::CupState::PUSHED:
                 applyCollision(world_2_gripper_left, world_2_gripper_right);
                 if (isOverTippingPoint())
                 {
-                    cup_state = Cup::CupState::TIPPED;
+                    cup_state_ = Cup::CupState::TIPPED;
                 }
                 if (!checkForCollision(world_2_gripper_left, world_2_gripper_right))
                 {
-                    cup_state = Cup::CupState::IDLE;
+                    cup_state_ = Cup::CupState::IDLE;
                 }
                 break;
             case Cup::CupState::TIPPED:
-                rotateMarkerToQuaternion(straight_down, 0.2);
+                rotateMarkerToQuaternion(STRAIGHT_DOWN, 0.2);
                 break;
             default:
                 break;
@@ -145,7 +145,7 @@ void Cup::updateCupData()
     velocity_ = temp_velocity;
 
     cup_data_.acceleration = acceleration_;
-    cup_data_.state = cup_state;
+    cup_data_.state = cup_state_;
     cup_data_.velocity = velocity_;
 
     sendCupData(cup_data_);
@@ -169,7 +169,7 @@ bool Cup::canFall()
 
 bool Cup::isOverTippingPoint()
 {
-    return std::abs(straight_up.angleShortestPath(cup_rotation_)) > M_PI * 0.15;
+    return std::abs(STRAIGHT_UP.angleShortestPath(cup_rotation_)) > M_PI * 0.15;
 }
 
 bool Cup::checkForCollision(const tf::StampedTransform& gripper_left, const tf::StampedTransform& gripper_right)
@@ -253,7 +253,7 @@ void Cup::applyGrabbing2(const tf::StampedTransform& grip_point, const tf::Stamp
         marker_.pose.position.x = grip_point.getOrigin().x();
         marker_.pose.position.y = grip_point.getOrigin().y();
         marker_.pose.position.z = grip_point.getOrigin().z() - CUP_HEIGHT / 2;
-        cup_state = Cup::CupState::IDLE;
+        cup_state_ = Cup::CupState::IDLE;
     }
 }
 
@@ -266,13 +266,13 @@ void Cup::applyGrabbing(const tf::StampedTransform& grip_point, const tf::Stampe
     // Is the gripper to wide open?
     if (grip_point.getOrigin().distance(gripper_left.getOrigin()) > CUP_RADIUS)
     {
-        cup_state = Cup::CupState::IDLE;
+        cup_state_ = Cup::CupState::IDLE;
     }
 }
 
 void Cup::applyGravity()
 {
-    if (cup_state == Cup::CupState::FALLING)
+    if (cup_state_ == Cup::CupState::FALLING)
     {
         fall_velocity_ = fall_velocity_ + (1.0 / FPS) * GRAVITY;
         marker_.pose.position.z -= fall_velocity_ * (1.0 / FPS);
@@ -311,7 +311,7 @@ double Cup::calculateAcceleration(double old_speed, double new_speed)
 
 std::string Cup::cupStateToString()
 {
-    switch (cup_state)
+    switch (cup_state_)
     {
         case Cup::CupState::FALLING:
             return "FALLING";
@@ -355,7 +355,7 @@ void Cup::rotateMarkerToQuaternion(tf::Quaternion rotation, float t)
 
 void Cup::updateCupColorOnState()
 {
-    switch (cup_state)
+    switch (cup_state_)
     {
         case Cup::CupState::FALLING:
             marker_.color.r = 0;

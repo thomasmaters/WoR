@@ -22,6 +22,10 @@
 #define FPS 30
 #define CUP_TO_GRIPPER_COLLISION 0.07
 
+/**
+ * Cup logic.
+ * @author Thomas Maters
+ */
 class Cup : public VirtualCupInterface
 {
   public:
@@ -32,14 +36,14 @@ class Cup : public VirtualCupInterface
         GRABBED,
         PUSHED,
         TIPPED
-    };
+    };  /// State of the cup.
 
     enum GripperToCupState
     {
         LEFT = -1,
         RIGHT = 1,
         CENTER = 0
-    };
+    };  /// Representation if the gripper is left or right of the cup.
 
     Cup(const std::string& a_namespace, float cup_x = 0, float cup_y = 0, float cup_z = 0);
 
@@ -211,7 +215,7 @@ class Cup : public VirtualCupInterface
     tf::Vector3 cup_center_;
     tf::Quaternion cup_rotation_;
 
-    CupState cup_state;
+    CupState cup_state_;
     std::string namespace_;  /// Unique namespace so we can have multiple markers.
 
     double fall_velocity_;

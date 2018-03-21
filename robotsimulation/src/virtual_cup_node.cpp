@@ -1,5 +1,4 @@
 #include <ros/ros.h>
-//#include <urdf/model.h>
 
 #include "virtual_cup.h"
 
