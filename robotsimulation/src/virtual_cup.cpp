@@ -65,7 +65,6 @@ void Cup::loop()
 
         if (last_frame_time_ == world_2_grip_point.stamp_)
         {
-            // ROS_WARN("Frame time did not update in time.");
             rate.sleep();
             skipped_frames++;
             continue;
