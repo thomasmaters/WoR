@@ -29,6 +29,8 @@ JointStateConverter::JointStateConverter() : cancel_movement_(false), at_destina
     current_positions_[4] = 1500;
     current_positions_[5] = 1500;
 
+    // Sends the current position on regular intervals when the arm is not moving so the simulation will not display
+    // incorrect values.
     concurrent_joint_state_publish_thread_ = std::thread([this]() {
         ros::Rate rate(FPS);
         while (!stopping_)
