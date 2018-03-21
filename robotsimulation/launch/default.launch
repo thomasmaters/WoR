@@ -4,10 +4,11 @@
   <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" />
 
   <param name="robot_description"  command="$(find xacro)/xacro '$(find robotsimulation)/urdf/lynxmotion_arm.urdf.xarco' world_pos:='0 0 0'" />
+  <param name="~/publish_frequency" value="50.0" />
   <param name="use_gui" value="$(arg gui)"/>
 
   <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
-  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher" />
+  <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
   <node name="$(anon cup_node)" pkg="robotsimulation" type="virtual_cup_node" launch-prefix="xterm -e" args="0.32 0.0 0.5"/>
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find robotsimulation)/config/config.rviz" required="true" />
   <node unless="$(arg gui)" name="ssc32u_controller_node" pkg="robotsimulation" type="ssc32u_controller_node" launch-prefix="xterm -e" />
