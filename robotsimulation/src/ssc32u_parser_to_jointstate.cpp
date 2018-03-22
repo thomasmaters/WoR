@@ -109,10 +109,9 @@ void JointStateConverter::moveToDesitnation(double movement_time,
     ROS_INFO("Reached destination");
 }
 
-// TODO: Kijk of de commando die geparsed wordt wel pwm waarden hebben die binnen de toegestane ranges vallen.
 void JointStateConverter::parseSsc32uCommand(const robotsimulation::ssc32u_command& msg)
 {
-    //<servoNumber, pair<toAngle, speed>>
+    //<servoNumber, pair<toPWM, speed>>
     std::map<int16_t, std::pair<int16_t, int16_t>> desired_positions;
     std::regex regex_1("#(\\d*)P(\\d*)S(\\d*)");
     std::regex regex_2("#(\\d*)P(\\d*)");
@@ -165,7 +164,31 @@ void JointStateConverter::parseSsc32uCommand(const robotsimulation::ssc32u_comma
 bool JointStateConverter::isValidSsc32uCommand(
     double movement_time, const std::map<int16_t, std::pair<int16_t, int16_t>>& desired_positions) const
 {
-    return movement_time != std::string::npos && desired_positions.size() != 0;
+    return movement_time != std::string::npos && desired_positions.size() != 0 &&
+           validateDesiredPositions(desired_positions);
+}
+
+bool JointStateConverter::validateDesiredPositions(
+    const std::map<int16_t, std::pair<int16_t, int16_t>>& desired_positions) const
+{
+    for (const std::pair<const int16_t, std::pair<int16_t, int16_t>>& servo_item : desired_positions)
+    {
+        if (servo_item.second.first < connected_servos_.at(servo_item.first).getMinPulseWidth())
+        {
+            ROS_WARN_STREAM("Servo '" << servo_item.first << "' has an pulse width lower then the allowed min pulse "
+                                                             "width. Min pulse width is '"
+                                      << connected_servos_.at(servo_item.first).getMinPulseWidth() << "'.");
+            return false;
+        }
+        if (servo_item.second.first > connected_servos_.at(servo_item.first).getMaxPulseWidth())
+        {
+            ROS_WARN_STREAM("Servo '" << servo_item.first << "' has an pulse width higher then the allowed max pulse "
+                                                             "width. Max pulse width is '"
+                                      << connected_servos_.at(servo_item.first).getMaxPulseWidth() << "'.");
+            return false;
+        }
+    }
+    return true;
 }
 
 void JointStateConverter::ssc32uCommandReceived(const robotsimulation::ssc32u_command msg)

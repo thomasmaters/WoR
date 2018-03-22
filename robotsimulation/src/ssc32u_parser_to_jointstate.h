@@ -75,6 +75,13 @@ class JointStateConverter : public Ssc32uParserInterface
     bool isValidSsc32uCommand(double movement_time,
                               const std::map<int16_t, std::pair<int16_t, int16_t>>& desired_positions) const;
 
+    /**
+     * Validate the pulse width ranges of the desired positions.
+     * @param desired_positions To check.
+     * @return True if all positions fall in the allowed servo ranges.
+     */
+    bool validateDesiredPositions(const std::map<int16_t, std::pair<int16_t, int16_t>>& desired_positions) const;
+
   private:
     sensor_msgs::JointState joint_state_msg_;
 

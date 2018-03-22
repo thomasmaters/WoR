@@ -143,9 +143,17 @@ void Cup::updateCupData()
     acceleration_ = calculateAcceleration(velocity_, temp_velocity);
     velocity_ = temp_velocity;
 
+    tfScalar yaw, pitch, roll;
+    tf::Matrix3x3 mat(cup_rotation_);
+
+    mat.getEulerYPR(yaw, pitch, roll);
+
     cup_data_.acceleration = acceleration_;
     cup_data_.state = cup_state_;
     cup_data_.velocity = velocity_;
+    cup_data_.roll = roll;
+    cup_data_.pitch = pitch;
+    cup_data_.yaw = yaw;
 
     sendCupData(cup_data_);
 }
