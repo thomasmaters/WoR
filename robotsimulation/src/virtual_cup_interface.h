@@ -20,7 +20,7 @@
 class VirtualCupInterface
 {
   public:
-    VirtualCupInterface(const std::string& cup_name);
+    explicit VirtualCupInterface(const std::string& cup_name);
 
     /**
      * Sends cup data on a topic.

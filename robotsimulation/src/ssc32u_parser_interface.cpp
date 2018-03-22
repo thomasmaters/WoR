@@ -41,7 +41,7 @@ std::map<uint8_t, SimulationServo> Ssc32uParserInterface::getRosParamServoConfig
         subsriber_node_.getParam("sim_servos", sim_servo_config);
 
         for (std::map<std::string, XmlRpc::XmlRpcValue>::iterator it = servo_config.begin(); it != servo_config.end();
-             it++)
+             ++it)
         {
             if (it->second.size() != 10)
             {

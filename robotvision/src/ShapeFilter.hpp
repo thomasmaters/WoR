@@ -4,6 +4,8 @@
 #include <opencv2/core/core.hpp>
 #include <opencv2/opencv.hpp>
 
+#include <mutex>
+
 #include "EnumOperators.hpp"
 #include "ImageDisplayer.hpp"
 
@@ -14,16 +16,16 @@ struct ShapeDetectResult;
  */
 class ShapeFilter
 {
-public:
+  public:
     enum class Shape : unsigned
     {
-        SQUARE    = 1,
+        SQUARE = 1,
         RECTANGLE = 2,
-        CIRCLE    = 4,
-        TRIANGLE  = 8
+        CIRCLE = 4,
+        TRIANGLE = 8
     };
 
-    ShapeFilter() : display(ImageDisplayer()), pixelsToRLFactor(0)
+    ShapeFilter() : display(ImageDisplayer()), pixelsToRLFactor(0), shapeFilterMutex()
     {
     }
 
@@ -47,7 +49,7 @@ public:
 
     virtual ~ShapeFilter();
 
-private:
+  private:
     /**
      * Pytagoras thearem
      * @param a
@@ -55,7 +57,7 @@ private:
      * @return
      * @author Thomas Maters
      */
-    float pytagoras(const cv::Point& a, const cv::Point& b);
+    static float pytagoras(const cv::Point& a, const cv::Point& b);
 
     /**
      * Converts shape pixel position and with to real life measurements.
@@ -63,7 +65,7 @@ private:
      * @param shape Shape to calculate the real life measurements of.
      * @author Thomas Maters
      */
-    void applyRLConversion(const cv::Size& screenSize, ShapeDetectResult& shape);
+    void applyRLConversion(const cv::Size& screenSize, ShapeDetectResult& shape) const;
 
     /**
      * Finds all rectangles and squares.
@@ -82,7 +84,7 @@ private:
      * @return
      * @author Thomas Maters
      */
-    bool isSquare(const ShapeDetectResult& shapeData);
+    static bool isSquare(const ShapeDetectResult& shapeData);
 
     /**
      * Draws a rectangle on a mat.
@@ -90,7 +92,7 @@ private:
      * @param corners Corners of rectangle.
      * @author Thomas Maters
      */
-    void drawSquare(cv::Mat& source, const cv::Point2f corners[4]);
+    static void drawSquare(cv::Mat& source, const cv::Point2f corners[4]);
 
     /**
      * Tries to find all the circles shapes in the mat.
@@ -107,11 +109,13 @@ private:
      * @param circleData Xpos, Ypos, Radius of the circle.
      * @author Thomas Maters
      */
-    void drawCircle(cv::Mat& source, const cv::Vec3f& circleData);
+    static void drawCircle(cv::Mat& source, const cv::Vec3f& circleData);
 
     ImageDisplayer display;  /// Visualizer.
 
     float pixelsToRLFactor;  /// Factor for converting pixels to mm.
+
+    std::mutex shapeFilterMutex;
 };
 
 /**
@@ -120,23 +124,22 @@ private:
 struct ShapeDetectResult
 {
     ShapeFilter::Shape shapeType = ShapeFilter::Shape::SQUARE;
-    float radiusInPixels         = 0;
-    float widthInPixels          = 0;
-    float heightInPixels         = 0;
-    float rotation               = 0;  // degrees
-    int32_t xPosition            = 0;
-    int32_t yPosition            = 0;
-    float widthInRL              = 0;
-    float heightInRL             = 0;
-    int32_t xPositionRL          = 0;
-    int32_t yPositionRL          = 0;
+    float radiusInPixels = 0;
+    float widthInPixels = 0;
+    float heightInPixels = 0;
+    float rotation = 0;  // degrees
+    int32_t xPosition = 0;
+    int32_t yPosition = 0;
+    float widthInRL = 0;
+    float heightInRL = 0;
+    int32_t xPositionRL = 0;
+    int32_t yPositionRL = 0;
 
-    void toString()
+    void toString() const
     {
-    	std::cout << "x: " << xPosition << " y: " << yPosition << " rot: " << rotation << std::endl;
-    	std::cout << "xrl: " << xPositionRL << " yrl: " << yPositionRL << std::endl;
+        std::cout << "x: " << xPosition << " y: " << yPosition << " rot: " << rotation << std::endl;
+        std::cout << "xrl: " << xPositionRL << " yrl: " << yPositionRL << std::endl;
     }
 };
-
 
 #endif /* SHAPEFILTER_HPP_ */

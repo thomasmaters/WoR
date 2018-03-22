@@ -18,16 +18,16 @@
 
 class ApplicationManager
 {
-public:
+  public:
     ApplicationManager();
 
     void start();
 
     virtual ~ApplicationManager();
 
-private:
+  private:
     void specialCommandParser(std::string& command);
-    std::pair<ColorFilter::Color, ShapeFilter::Shape> findCommandParser(const std::string& command);
+    static std::pair<ColorFilter::Color, ShapeFilter::Shape> findCommandParser(const std::string& command);
 
     bool findSingleObject(const std::string& command, std::vector<ShapeDetectResult>& result);
 
@@ -39,9 +39,10 @@ private:
 
     RosCommunication rosCommunication;
 
+    std::mutex shapeFindMutex;
+
     ImageFilter::FilterType globalFilter;
     bool showFilterProgress;
 };
-
 
 #endif /* APPLICATIONMANAGER_HPP_ */

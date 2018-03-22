@@ -67,7 +67,7 @@ class Cup : public VirtualCupInterface
      * @return True if the cup can fall.
      * @author Thomas Maters
      */
-    bool canFall();
+    bool canFall() const;
 
     /**
      * Checks if the cup is rotated past its tipping point.
@@ -155,7 +155,7 @@ class Cup : public VirtualCupInterface
      * @return Velocity in m/s.
      * @author Thomas Maters
      */
-    double calculateVelocity(const tf::Vector3& old_pos, const tf::Vector3& new_pos);
+    static double calculateVelocity(const tf::Vector3& old_pos, const tf::Vector3& new_pos);
 
     /**
      * Calculates the acceleration of the cup.
@@ -164,14 +164,14 @@ class Cup : public VirtualCupInterface
      * @return Acceleration in m/s^2.
      * @author Thomas Maters
      */
-    double calculateAcceleration(double old_speed, double new_speed);
+    static double calculateAcceleration(double old_speed, double new_speed);
 
     /**
      * Converts current state to a string.
      * @return String representation of the current state.
      * @author Thomas Maters
      */
-    std::string cupStateToString();
+    std::string cupStateToString() const;
 
     /**
      * Calculates the direction the gripper is in relation to the cup.
@@ -190,8 +190,8 @@ class Cup : public VirtualCupInterface
      * @return Value representing left or right.
      * @author Thomas Maters
      */
-    double getRightOrLeft(const tf::Vector3& up, const tf::Vector3& forward, const tf::Vector3& from,
-                          const tf::Vector3& to) const;
+    static double getRightOrLeft(const tf::Vector3& up, const tf::Vector3& forward, const tf::Vector3& from,
+                                 const tf::Vector3& to);
 
     /**
      * Rotates the marker_ to a Quaternion based on a factor to move to.

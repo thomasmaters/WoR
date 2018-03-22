@@ -169,7 +169,7 @@ void Cup::updateMarkerData()
 ///////State change checks/////////////////
 ///////////////////////////////////////////
 
-bool Cup::canFall()
+bool Cup::canFall() const
 {
     return marker_.pose.position.z > 0;
 }
@@ -316,7 +316,7 @@ double Cup::calculateAcceleration(double old_speed, double new_speed)
 ///////Misc functions//////////////////////
 ///////////////////////////////////////////
 
-std::string Cup::cupStateToString()
+std::string Cup::cupStateToString() const
 {
     switch (cup_state_)
     {
@@ -344,7 +344,7 @@ Cup::GripperToCupState Cup::getDirectionToTransform(const tf::StampedTransform& 
 }
 
 double Cup::getRightOrLeft(const tf::Vector3& up, const tf::Vector3& forward, const tf::Vector3& from,
-                           const tf::Vector3& to) const
+                           const tf::Vector3& to)
 {
     tf::Vector3 delta = from - to;
     tf::Vector3 cross = forward.cross(delta);

@@ -1,9 +1,12 @@
 <launch>
+  <rosparam command="load" file="$(find robotsimulation)/config/servo_config.yaml" />
+
   <arg name="gui" default="false" />
   <arg name="demo" default="false" />
+  <arg name="robot_pos" default="0 0 0" />
   <arg name="rvizconfig" default="$(find urdf_tutorial)/rviz/urdf.rviz" />
 
-  <param name="robot_description"  command="$(find xacro)/xacro '$(find robotsimulation)/urdf/lynxmotion_arm.urdf.xarco' world_pos:='0 0 0'" />
+  <param name="robot_description"  command="$(find xacro)/xacro '$(find robotsimulation)/urdf/lynxmotion_arm.urdf.xarco' world_pos:='$(arg robot_pos)'" />
   <param name="~/publish_frequency" value="50.0" />
   <param name="use_gui" value="$(arg gui)"/>
 

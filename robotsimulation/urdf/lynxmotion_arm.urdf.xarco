@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <robot name="lynxmotion_arm" xmlns:xacro="http://ros.org/wiki/xacro">
-	<xacro:property name="params" value="${load_yaml('../../shared/config/servo_config.yaml')}"/>
+	<xacro:property name="params" value="${load_yaml('../config/servo_config.yaml')}"/>
 	
 	<xacro:arg name="world_pos" default="0 0 0"/>
 

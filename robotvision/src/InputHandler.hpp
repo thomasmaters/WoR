@@ -14,14 +14,14 @@
  */
 class InputHandler
 {
-public:
-    InputHandler()
+  public:
+    InputHandler() : videoCaptureMutex(), inputMutex()
     {
     }
 
-    InputHandler(const InputHandler& other) :
-        cap(other.cap), image(other.image), frame(other.frame)
-	{
+    InputHandler(const InputHandler& other)
+      : cap(other.cap), image(other.image), frame(), videoCaptureMutex(), inputMutex()
+    {
     }
 
     virtual ~InputHandler()
@@ -49,7 +49,7 @@ public:
      * @return Copy to image.
      * @author Thomas Maters
      */
-    cv::Mat getImage()
+    cv::Mat getImage() const
     {
         return image;
     }
@@ -74,36 +74,39 @@ public:
      */
     cv::Mat getVideoCaptureFrame()
     {
-    	cv::Mat output;
+        videoCaptureMutex.lock();
+        cv::Mat output;
         try
         {
-			videoCaptureMutex.lock();
-	        cap.read(frame);
-	        output = frame.clone();
-//            frame.copyTo(output);
-			videoCaptureMutex.unlock();
-			cv::waitKey(50);
+            cap.read(frame);
+            output = frame.clone();
+            //            frame.copyTo(output);
+
+            cv::waitKey(50);
         }
         catch (std::exception& e)
         {
             std::cerr << __PRETTY_FUNCTION__ << ": " << e.what() << std::endl;
         }
+        videoCaptureMutex.unlock();
         return output;
     }
 
     void video_capture()
     {
-    	cv::Mat windowFrame;
-    	cv::namedWindow("Video_Window");
+        cv::Mat windowFrame;
+        cv::namedWindow("Video_Window");
         while (cap.isOpened())
         {
             videoCaptureMutex.lock();
             cap >> frame;
             windowFrame = frame.clone();
-            cv::line(windowFrame, cv::Point(0, frame.rows / 2), cv::Point(frame.cols, frame.rows / 2), cv::Scalar(0,0,255));
-            cv::imshow("Video_Window", windowFrame);
             videoCaptureMutex.unlock();
-            cv::waitKey(16);
+
+            cv::line(windowFrame, cv::Point(0, frame.rows / 2), cv::Point(frame.cols, frame.rows / 2),
+                     cv::Scalar(0, 0, 255));
+            cv::imshow("Video_Window", windowFrame);
+            cv::waitKey(5);
         }
     }
 
@@ -124,24 +127,23 @@ public:
      */
     std::string getUserInput()
     {
-    	inputMutex.lock();
+        inputMutex.lock();
         std::string input;
         std::cin.clear();
-        //std::cin.ignore(std::numeric_limits<std::streamsize>::max());
+        // std::cin.ignore(std::numeric_limits<std::streamsize>::max());
         std::cout << "Enter command: " << std::endl;
         getline(std::cin, input);
         inputMutex.unlock();
         return input;
     }
 
-private:
+  private:
     cv::VideoCapture cap;  /// Video capture instance.
     cv::Mat image;         /// Image read from disk.
     cv::Mat frame;         /// Last video capture frame.
 
-	std::mutex videoCaptureMutex;  /// Mutex for locking frame fetching operation.
-	std::mutex inputMutex;
+    std::mutex videoCaptureMutex;  /// Mutex for locking frame fetching operation.
+    std::mutex inputMutex;
 };
-
 
 #endif /* INPUTHANDLER_HPP_ */

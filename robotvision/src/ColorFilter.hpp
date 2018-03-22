@@ -17,18 +17,18 @@
  */
 class ColorFilter
 {
-public:
-    ColorFilter() : display(ImageDisplayer()), filter(ImageFilter())
+  public:
+    ColorFilter() : display(ImageDisplayer()), filter(ImageFilter()), colorFilterMutex()
     {
     }
 
     enum class Color : unsigned
     {
-        BLACK  = 1,
-        BLUE   = 2,
-        GREEN  = 4,
-        RED    = 8,
-        WHITE  = 16,
+        BLACK = 1,
+        BLUE = 2,
+        GREEN = 4,
+        RED = 8,
+        WHITE = 16,
         YELLOW = 32
     };
 
@@ -46,7 +46,7 @@ public:
     {
     }
 
-private:
+  private:
     /**
      * Applies a cv::InRange function on source.
      * @param source
@@ -55,10 +55,13 @@ private:
      * @param result To write the result to.
      * @author Thomas Maters
      */
-    void applyRange(const cv::Mat& source, const cv::Scalar& lowerBound, const cv::Scalar& upperBound, cv::Mat& result);
+    static void applyRange(const cv::Mat& source, const cv::Scalar& lowerBound, const cv::Scalar& upperBound,
+                           cv::Mat& result);
 
     ImageDisplayer display;  /// Instance for displaying the images.
     ImageFilter filter;      /// Instance for applieng color specific filters.
+
+    std::mutex colorFilterMutex;
 };
 
 #endif /* COLORFILTER_HPP_ */

@@ -9,7 +9,7 @@
 
 cv::Mat ImageFilter::applyFilter(cv::Mat source, ImageFilter::FilterType filter, bool showResult)
 {
-	filterMutex.lock();
+    filterMutex.lock();
     // result = applyRemovingShadows(result);
     // display.displayWindow(result, "ImageFilterRemoveShadowsApplied");
     if ((filter & ImageFilter::FilterType::BILATERAL) == ImageFilter::FilterType::BILATERAL)
@@ -45,7 +45,9 @@ cv::Mat ImageFilter::applyFilter(cv::Mat source, ImageFilter::FilterType filter,
     {
         display.displayWindow(source.clone(), "ImageFiltersApplied");
     }
+
     filterMutex.unlock();
+
     return source;
 }
 
@@ -125,7 +127,8 @@ cv::Mat ImageFilter::applyRemovingShadows(const cv::Mat& source)
     std::vector<cv::Mat> result_planes;
     std::vector<cv::Mat> result_norm_planes;
 
-    cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2 * dilation_size + 1, 2 * dilation_size + 1), cv::Point(-1, -1));
+    cv::Mat element = cv::getStructuringElement(cv::MORPH_RECT, cv::Size(2 * dilation_size + 1, 2 * dilation_size + 1),
+                                                cv::Point(-1, -1));
 
     split(source, rgb_planes);
 

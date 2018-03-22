@@ -10,7 +10,7 @@
 
 class ImageDisplayer
 {
-public:
+  public:
     ImageDisplayer()
     {
     }
@@ -19,33 +19,36 @@ public:
     {
     }
 
-    void displayWindow(const cv::Mat& source)
+    static void displayWindow(const cv::Mat& source)
     {
         std::string windowName = "test";
-        //cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
+        // cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
         imshow(windowName, source);
+        cv::waitKey(5);
     }
 
-    void displayWindow(const cv::Mat& source, const std::string& windowName)
+    static void displayWindow(const cv::Mat& source, const std::string& windowName)
     {
         cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
         imshow(windowName, source);
+        cv::waitKey(5);
     }
 
-    void displayWindow(const std::type_info& typeInfo, const cv::Mat& source)
+    static void displayWindow(const std::type_info& typeInfo, const cv::Mat& source)
     {
         std::string windowName = std::string(typeInfo.name()) + "_window";
-     //   cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
+        //   cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
         imshow(windowName, source);
+        cv::waitKey(5);
     }
 
-    void displayWindowMasked(const std::type_info& typeInfo, const cv::Mat& source, const cv::Mat& mask)
+    static void displayWindowMasked(const std::type_info& typeInfo, const cv::Mat& source, const cv::Mat& mask)
     {
         cv::Mat output;
         source.copyTo(output, mask);
         displayWindow(typeInfo, output);
+        cv::waitKey(5);
     }
 };
-
 
 #endif /* IMAGEDISPLAYER_HPP_ */
