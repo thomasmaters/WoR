@@ -43,13 +43,6 @@ class Cup : public VirtualCupInterface
         TIPPED
     };  /// State of the cup.
 
-    enum GripperToCupState
-    {
-        LEFT = -1,
-        RIGHT = 1,
-        CENTER = 0
-    };  /// Representation if the gripper is left or right of the cup.
-
     Cup(const std::string& a_namespace, float cup_x = 0, float cup_y = 0, float cup_z = 0);
 
     void loop();
@@ -79,9 +72,15 @@ class Cup : public VirtualCupInterface
      * @return True if tipped.
      * @author Thomas Maters
      */
-    bool isOverTippingPoint();
+    bool isOverTippingPoint() const;
 
-    bool checkForCollision(unsigned char left_gripper_hits, unsigned char right_gripper_hits);
+    /**
+     * Checks based on the gripper hits if the cup is being collided with.
+     * @param left_gripper_hits
+     * @param right_gripper_hits
+     * @return True if colliding with cup.
+     */
+    static bool checkForCollision(unsigned char left_gripper_hits, unsigned char right_gripper_hits);
 
     /**
      * Checks if the gripper is gripping to cup to high that it will tip.
@@ -89,31 +88,30 @@ class Cup : public VirtualCupInterface
      * @return True if the frame is about to tip the cup.
      * @author Thomas Maters
      */
-    bool checkForSpilling(const tf::StampedTransform& frame);
-
-    bool canBeGrabbed(const tf::StampedTransform& grip_point, const tf::StampedTransform& left_gripper);
-
-    bool canBeGrabbed(unsigned char left_gripper_hits, unsigned char right_gripper_hits);
+    bool checkForSpilling(const tf::StampedTransform& frame) const;
 
     /**
-     * Determens on which frame is colliding with the cup and which direction it is colliding from.
-     * @param gripper_left
-     * @param gripper_right
-     * @author Thomas Maters
+     * Checks based on distance from gripper to grip_point if the cup can be grabbed.
+     * @param grip_point
+     * @param left_gripper
+     * @return True if cup can be grabbed.
      */
-    void applyCollision(const tf::StampedTransform& gripper_left, const tf::StampedTransform& gripper_right);
+    static bool canBeGrabbed(const tf::StampedTransform& grip_point, const tf::StampedTransform& left_gripper);
 
+    /**
+     * Checks if the cup can be grabbed based on the collison points of both grippers.
+     * @param left_gripper_hits
+     * @param right_gripper_hits
+     * @return True if cup can be grabbed.
+     */
+    static bool canBeGrabbed(unsigned char left_gripper_hits, unsigned char right_gripper_hits);
+
+    /**
+     * Checks its collision points if they are in contact it with the cup.
+     * @param frame Gripper frame.
+     * @return How many points hit and the combined push direction vector.
+     */
     std::pair<unsigned char, tf::Vector3> applyCollision2(const tf::StampedTransform& frame);
-
-    double getDistanceFromPointToLine(const tf::Vector3& line_start, const tf::Vector3& line_end,
-                                      const tf::Vector3& point);
-    /**
-     * Applies collision calculation to the cup.
-     * @param frame To calculate the push direction from.
-     * @param push_direction Which direction to push the cup to.
-     * @author Thomas Maters
-     */
-    void applyCollisionToCup(const tf::StampedTransform& frame, const tf::Vector3& push_direction);
 
     /**
      * Applies spilling physics to the cup.
@@ -132,13 +130,10 @@ class Cup : public VirtualCupInterface
     void applyGrabbing(const tf::StampedTransform& grip_point, const tf::StampedTransform& gripper_left);
 
     /**
-     * Grabs the cup by changing the frame of the cup to the grippoint.
-     * @param grip_point Frame of the grippoint in relation to the world.
-     * @param gripper_left Frame of the left_gripper in relation to the world.
-     * @author Thomas Maters
+     * Applies pushing of the gripper on the cup based on the left and right push direction vectors.
+     * @param left
+     * @param right
      */
-    void applyGrabbing2(const tf::StampedTransform& grip_point, const tf::StampedTransform& gripper_left);
-
     void applyPushing(const tf::Vector3& left, const tf::Vector3& right);
 
     /**
@@ -166,31 +161,21 @@ class Cup : public VirtualCupInterface
     static double calculateAcceleration(double old_speed, double new_speed);
 
     /**
+     * Calculates how far a point is from a line segment.
+     * @param line_start
+     * @param line_end
+     * @param point
+     * @return Closest distance from line to point.
+     */
+    static double getDistanceFromPointToLine(const tf::Vector3& line_start, const tf::Vector3& line_end,
+                                             const tf::Vector3& point);
+
+    /**
      * Converts current state to a string.
      * @return String representation of the current state.
      * @author Thomas Maters
      */
     std::string cupStateToString() const;
-
-    /**
-     * Calculates the direction the gripper is in relation to the cup.
-     * @param frame Of the gripper.
-     * @return
-     * @author Thomas Maters
-     */
-    Cup::GripperToCupState getDirectionToTransform(const tf::StampedTransform& frame);
-
-    /**
-     *
-     * @param up Vector of gripper.
-     * @param forward Vector of gripper.
-     * @param from Right or left from.
-     * @param to Right or left in relation to.
-     * @return Value representing left or right.
-     * @author Thomas Maters
-     */
-    static double getRightOrLeft(const tf::Vector3& up, const tf::Vector3& forward, const tf::Vector3& from,
-                                 const tf::Vector3& to);
 
     /**
      * Rotates the marker_ to a Quaternion based on a factor to move to.
