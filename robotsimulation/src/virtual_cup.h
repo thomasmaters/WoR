@@ -17,10 +17,15 @@
 #define CUP_HEIGHT .1
 #define CUP_RADIUS 0.05
 #define CUP_GRAB_RADIUS 0.045
+#define MIN_CUP_GRAB_RADIUS 0.035
 #define GRAVITY 9.8     // m/s^2
 #define CUP_WEIGHT 0.1  // kg
 #define FPS 30
 #define CUP_TO_GRIPPER_COLLISION 0.07
+
+#define GRIPPER_WIDTH 0.02
+#define GRIPPER_HEIGHT 0.02
+#define GRIPPER_DEPTH 0.03
 
 /**
  * Cup logic.
@@ -76,14 +81,7 @@ class Cup : public VirtualCupInterface
      */
     bool isOverTippingPoint();
 
-    /**
-     * Checks both left and right gripper of the robot arm if they are colliding with the cup.
-     * @param gripper_left
-     * @param gripper_right
-     * @return True if a collision is happening.
-     * @author Thomas Maters
-     */
-    bool checkForCollision(const tf::StampedTransform& gripper_left, const tf::StampedTransform& gripper_right);
+    bool checkForCollision(unsigned char left_gripper_hits, unsigned char right_gripper_hits);
 
     /**
      * Checks if the gripper is gripping to cup to high that it will tip.
@@ -93,14 +91,7 @@ class Cup : public VirtualCupInterface
      */
     bool checkForSpilling(const tf::StampedTransform& frame);
 
-    /**
-     * Checks if the cup can be grabbed.
-     * @param grip_point Frame representing the grippoint of the arm.
-     * @param gripper_left Frame representing the frame of the left gripper.
-     * @return True if it the cup can be grabbed.
-     * @author Thomas Maters
-     */
-    bool canBeGrabbed(const tf::StampedTransform& grip_point, const tf::StampedTransform& gripper_left);
+    bool canBeGrabbed(unsigned char left_gripper_hits, unsigned char right_gripper_hits);
 
     /**
      * Determens on which frame is colliding with the cup and which direction it is colliding from.
@@ -110,6 +101,10 @@ class Cup : public VirtualCupInterface
      */
     void applyCollision(const tf::StampedTransform& gripper_left, const tf::StampedTransform& gripper_right);
 
+    std::pair<unsigned char, tf::Vector3> applyCollision2(const tf::StampedTransform& frame);
+
+    double getDistanceFromPointToLine(const tf::Vector3& line_start, const tf::Vector3& line_end,
+                                      const tf::Vector3& point);
     /**
      * Applies collision calculation to the cup.
      * @param frame To calculate the push direction from.
@@ -213,6 +208,7 @@ class Cup : public VirtualCupInterface
   private:
     tf::Vector3 cup_origin_;
     tf::Vector3 cup_center_;
+    tf::Vector3 cup_gripper_offset;
     tf::Quaternion cup_rotation_;
 
     CupState cup_state_;
@@ -223,6 +219,7 @@ class Cup : public VirtualCupInterface
     double velocity_;
 
     visualization_msgs::Marker marker_;
+    visualization_msgs::Marker test_marker_;
     robotsimulation::cup_data cup_data_;
 
     ros::Time last_frame_time_;  /// Variable to check if we have got an updated since last frame request.
