@@ -91,6 +91,8 @@ class Cup : public VirtualCupInterface
      */
     bool checkForSpilling(const tf::StampedTransform& frame);
 
+    bool canBeGrabbed(const tf::StampedTransform& grip_point, const tf::StampedTransform& left_gripper);
+
     bool canBeGrabbed(unsigned char left_gripper_hits, unsigned char right_gripper_hits);
 
     /**
@@ -136,6 +138,8 @@ class Cup : public VirtualCupInterface
      * @author Thomas Maters
      */
     void applyGrabbing2(const tf::StampedTransform& grip_point, const tf::StampedTransform& gripper_left);
+
+    void applyPushing(const tf::Vector3& left, const tf::Vector3& right);
 
     /**
      * Applies gravity to the cup.

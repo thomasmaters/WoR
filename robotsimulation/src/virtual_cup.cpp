@@ -116,6 +116,11 @@ void Cup::loop()
         std::pair<unsigned char, tf::Vector3> left_gripper_hits = applyCollision2(world_2_gripper_left);
         std::pair<unsigned char, tf::Vector3> right_gripper_hits = applyCollision2(world_2_gripper_right);
 
+        std::cout << cupStateToString() << std::endl;
+        std::cout << "Hits left: " << std::to_string(left_gripper_hits.first)
+                  << " Hits right: " << std::to_string(right_gripper_hits.first) << std::endl;
+        std::cout << "Cup position: " << cup_origin_.x() << "," << cup_origin_.y() << "," << cup_origin_.z()
+                  << std::endl;
         switch (cup_state_)
         {
             case Cup::CupState::FALLING:
@@ -128,43 +133,58 @@ void Cup::loop()
                 applyGravity();
                 break;
             case Cup::CupState::GRABBED:
+                if (!canBeGrabbed(left_gripper_hits.first, right_gripper_hits.first) &&
+                    !canBeGrabbed(world_2_grip_point, world_2_gripper_left))
+                {
+                    cup_state_ = Cup::CupState::IDLE;
+                    break;
+                }
                 applyGrabbing(world_2_grip_point, world_2_gripper_left);
                 break;
             case Cup::CupState::IDLE:
                 // If the cup is pushed a little, rotate it back up.
                 rotateMarkerToQuaternion(STRAIGHT_UP, 0.2);
+                std::cout << "canfall" << std::endl;
                 if (canFall())
                 {
                     cup_state_ = Cup::CupState::FALLING;
                 }
+                std::cout << "check collision" << std::endl;
                 if (checkForCollision(left_gripper_hits.first, right_gripper_hits.first))
                 {
                     cup_state_ = Cup::CupState::PUSHED;
                     break;
                 }
+                std::cout << "can be grabbed" << std::endl;
                 if (canBeGrabbed(left_gripper_hits.first, right_gripper_hits.first))
                 {
-                    cup_gripper_offset = world_2_grip_point.getOrigin() - cup_origin_;
+                    cup_gripper_offset = cup_origin_ - world_2_grip_point.getOrigin();
                     cup_state_ = Cup::CupState::GRABBED;
                 }
                 break;
             case Cup::CupState::PUSHED:
-            {
-                tf::Vector3 kaas = (left_gripper_hits.second.normalized() + right_gripper_hits.second.normalized()) / 2;
-
-                marker_.pose.position.x -= kaas.x() / 150;
-                marker_.pose.position.y -= kaas.y() / 150;
-
                 if (isOverTippingPoint())
                 {
                     cup_state_ = Cup::CupState::TIPPED;
                 }
+
                 if (!checkForCollision(left_gripper_hits.first, right_gripper_hits.first))
                 {
                     cup_state_ = Cup::CupState::IDLE;
                 }
+                else if (checkForSpilling(world_2_gripper_right))
+                {
+                    applySpilling(world_2_gripper_right, tf::Vector3(0, 1, 0));
+                    break;
+                }
+                else if (checkForSpilling(world_2_gripper_left))
+                {
+                    applySpilling(world_2_gripper_left, tf::Vector3(0, -1, 0));
+                    break;
+                }
+
+                applyPushing(left_gripper_hits.second, right_gripper_hits.second);
                 break;
-            }
             case Cup::CupState::TIPPED:
                 rotateMarkerToQuaternion(STRAIGHT_DOWN, 0.2);
                 break;
@@ -176,6 +196,22 @@ void Cup::loop()
         updateMarkerData();
         updateCupData();
     }
+}
+
+void Cup::applyPushing(const tf::Vector3& left, const tf::Vector3& right)
+{
+    tf::Vector3 pushDirection = ZERO_VECTOR3;
+    if (left != ZERO_VECTOR3)
+    {
+        pushDirection += left.normalized();
+    }
+    if (right != ZERO_VECTOR3)
+    {
+        pushDirection += right.normalized();
+    }
+
+    marker_.pose.position.x -= pushDirection.x() / 200;
+    marker_.pose.position.y -= pushDirection.y() / 200;
 }
 
 ///////////////////////////////////////////
@@ -242,6 +278,11 @@ bool Cup::canBeGrabbed(unsigned char left_gripper_hits, unsigned char right_grip
     return left_gripper_hits >= 1 && right_gripper_hits >= 1;
 }
 
+bool Cup::canBeGrabbed(const tf::StampedTransform& grip_point, const tf::StampedTransform& left_gripper)
+{
+    return grip_point.getOrigin().distance(left_gripper.getOrigin()) < CUP_RADIUS * 0.75;
+}
+
 ///////////////////////////////////////////
 ///////State functions/////////////////////
 ///////////////////////////////////////////
@@ -280,26 +321,6 @@ std::pair<unsigned char, tf::Vector3> Cup::applyCollision2(const tf::StampedTran
         hit_point.x = transformed_point.x();
         hit_point.y = transformed_point.y();
         hit_point.z = transformed_point.z();
-
-        //        tf::Vector3 v = cup_height - cup_origin_;
-        //        tf::Vector3 w = transformed_point - cup_origin_;
-        //        double c1 = w.dot(v);
-        //        double c2 = v.dot(v);
-        //        double antwoord = 0;
-        //        if (c1 <= 0)
-        //        {
-        //            antwoord = (transformed_point - cup_origin_).length();
-        //        }
-        //        else if (c2 <= c1)
-        //        {
-        //            antwoord = (transformed_point - cup_height).length();
-        //        }
-        //        else
-        //        {
-        //            double b = c1 / c2;
-        //            tf::Vector3 Pb = cup_origin_ + b * v;
-        //            antwoord = (transformed_point - Pb).length();
-        //        }
 
         double distanceToCup = getDistanceFromPointToLine(cup_origin_, cup_height, transformed_point);
 
@@ -402,10 +423,10 @@ void Cup::applyGrabbing(const tf::StampedTransform& grip_point, const tf::Stampe
     marker_.pose.position.z = grip_point.getOrigin().z() + cup_gripper_offset.z();
 
     // Is the gripper to wide open?
-    if ((grip_point.getOrigin() + cup_gripper_offset).distance(gripper_left.getOrigin()) > CUP_RADIUS / 2)
-    {
-        cup_state_ = Cup::CupState::IDLE;
-    }
+    //    if ((grip_point.getOrigin() + cup_gripper_offset).distance(gripper_left.getOrigin()) > CUP_RADIUS / 2)
+    //    {
+    //        cup_state_ = Cup::CupState::IDLE;
+    //    }
 }
 
 void Cup::applyGravity()
