@@ -39,7 +39,7 @@ include_directories(
   ${catkin_INCLUDE_DIRS}
 )
 
-add_executable(cli_node src/cli_node.cpp)
+add_executable(demo_node src/demo_node.cpp)
 add_executable(ssc32u_controller_node 
 	src/ssc32u_parser_node.cpp 
 	src/ssc32u_parser_interface.cpp
@@ -50,11 +50,11 @@ add_executable(virtual_cup_node
 	src/virtual_cup_interface.cpp)
 
 
-add_dependencies(cli_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(demo_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(ssc32u_controller_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 add_dependencies(virtual_cup_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
 
-target_link_libraries(cli_node
+target_link_libraries(demo_node
   ${catkin_LIBRARIES}
 )
 

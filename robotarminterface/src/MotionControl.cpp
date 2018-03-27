@@ -41,7 +41,7 @@ void MotionControl::moveToPosition(defaultPositions position)
         {
             case defaultPositions::PARK:
                 movementScheduler(
-                    std::shared_ptr<MovementCommand>(new MovementCommand("#0P1500#1P1970#2P1795#3P500#5P1527T3000\r")));
+                    std::shared_ptr<MovementCommand>(new MovementCommand("#0P1500#1P1900#2P1790#3P500#5P1527T3000\r")));
                 break;
             case defaultPositions::READY:
                 movementScheduler(std::shared_ptr<MovementCommand>(

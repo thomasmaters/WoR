@@ -262,7 +262,7 @@ bool Cup::canBeGrabbed(unsigned char left_gripper_hits, unsigned char right_grip
 
 bool Cup::canBeGrabbed(const tf::StampedTransform& grip_point, const tf::StampedTransform& left_gripper)
 {
-    return grip_point.getOrigin().distance(left_gripper.getOrigin()) < CUP_RADIUS * 0.75;
+    return grip_point.getOrigin().distance(left_gripper.getOrigin()) < CUP_RADIUS * 0.85;
 }
 
 ///////////////////////////////////////////

@@ -10,10 +10,17 @@
   <param name="~/publish_frequency" value="50.0" />
   <param name="use_gui" value="$(arg gui)"/>
 
-  <node if="$(arg gui)" name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  <group if="$(arg gui)">
+  	  <node name="joint_state_publisher" pkg="joint_state_publisher" type="joint_state_publisher" />
+  </group>
+  
+  <group unless="$(arg gui)">
+      <node name="ssc32u_controller_node" pkg="robotsimulation" type="ssc32u_controller_node" launch-prefix="xterm -e" />
+      <node if="$(arg demo)" name="demo_node" pkg="robotsimulation" type="demo_node" launch-prefix="xterm -e" />
+  </group>
+  
   <node name="robot_state_publisher" pkg="robot_state_publisher" type="state_publisher"/>
   <node name="$(anon cup_node)" pkg="robotsimulation" type="virtual_cup_node" launch-prefix="xterm -e" args="0.32 0.0 0.5"/>
+  <!--<node name="$(anon cup_node1)" pkg="robotsimulation" type="virtual_cup_node" launch-prefix="xterm -e" args="0.1 0.25 0.5"/> -->
   <node name="rviz" pkg="rviz" type="rviz" args="-d $(find robotsimulation)/config/config.rviz" required="true" />
-  <node unless="$(arg gui)" name="ssc32u_controller_node" pkg="robotsimulation" type="ssc32u_controller_node" launch-prefix="xterm -e" />
-  <node if="$(arg demo)" name="cli_node" pkg="robotsimulation" type="cli_node" launch-prefix="xterm -e" />
 </launch>
