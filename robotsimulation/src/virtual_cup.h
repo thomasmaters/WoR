@@ -208,7 +208,7 @@ class Cup : public VirtualCupInterface
     double velocity_;
 
     visualization_msgs::Marker marker_;
-    visualization_msgs::Marker test_marker_;
+    visualization_msgs::Marker detection_marker_;
     robotsimulation::cup_data cup_data_;
 
     ros::Time last_frame_time_;  /// Variable to check if we have got an updated since last frame request.

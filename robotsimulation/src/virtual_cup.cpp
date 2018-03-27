@@ -56,28 +56,28 @@ Cup::Cup(const std::string& a_namespace, float cup_x, float cup_y, float cup_z)
     marker_.color.b = 0.75f;
     marker_.color.a = 1.0;
 
-    test_marker_.header.frame_id = "world";
-    test_marker_.header.stamp = ros::Time::now();
-    test_marker_.ns = "test_marker";
-    test_marker_.id = 1;
-    test_marker_.type = visualization_msgs::Marker::POINTS;
+    detection_marker_.header.frame_id = "world";
+    detection_marker_.header.stamp = ros::Time::now();
+    detection_marker_.ns = "test_marker";
+    detection_marker_.id = 1;
+    detection_marker_.type = visualization_msgs::Marker::POINTS;
 
-    test_marker_.pose.position.x = 0;
-    test_marker_.pose.position.y = 0;
-    test_marker_.pose.position.z = 0;
-    test_marker_.pose.orientation.x = 0.0;
-    test_marker_.pose.orientation.y = 0.0;
-    test_marker_.pose.orientation.z = 0.0;
-    test_marker_.pose.orientation.w = 1.0;
+    detection_marker_.pose.position.x = 0;
+    detection_marker_.pose.position.y = 0;
+    detection_marker_.pose.position.z = 0;
+    detection_marker_.pose.orientation.x = 0.0;
+    detection_marker_.pose.orientation.y = 0.0;
+    detection_marker_.pose.orientation.z = 0.0;
+    detection_marker_.pose.orientation.w = 1.0;
 
-    test_marker_.scale.x = 0.01;  // Length
-    test_marker_.scale.y = 0.01;  // Width
-    test_marker_.scale.z = 0;     // Height
+    detection_marker_.scale.x = 0.01;  // Length
+    detection_marker_.scale.y = 0.01;  // Width
+    detection_marker_.scale.z = 0;     // Height
 
-    test_marker_.color.r = 0.0f;
-    test_marker_.color.g = 0.95f;
-    test_marker_.color.b = 0.75f;
-    test_marker_.color.a = 1.0;
+    detection_marker_.color.r = 0.0f;
+    detection_marker_.color.g = 0.95f;
+    detection_marker_.color.b = 0.75f;
+    detection_marker_.color.a = 1.0;
 
     last_frame_time_ = ros::Time(0);
 }
@@ -89,11 +89,6 @@ void Cup::loop()
     ros::Rate rate(FPS);
     while (ros::ok())
     {
-        cup_rotation_ = tf::Quaternion(marker_.pose.orientation.x, marker_.pose.orientation.y,
-                                       marker_.pose.orientation.z, marker_.pose.orientation.w);
-        cup_origin_ = tf::Vector3(marker_.pose.position.x, marker_.pose.position.y, marker_.pose.position.z);
-        cup_center_ = cup_origin_ + tf::quatRotate(cup_rotation_, tf::Vector3(CUP_HEIGHT / 2, 0, 0));
-
         tf::StampedTransform world_2_gripper_left = getTransform("/world", "/gripper_left");
         tf::StampedTransform world_2_gripper_right = getTransform("/world", "/gripper_right");
         tf::StampedTransform world_2_grip_point = getTransform("/world", "/grip_point");
@@ -111,16 +106,22 @@ void Cup::loop()
         }
 
         last_frame_time_ = world_2_grip_point.stamp_;
-        test_marker_.points.clear();
-        test_marker_.colors.clear();
+        detection_marker_.points.clear();
+        detection_marker_.colors.clear();
+
+        cup_rotation_ = tf::Quaternion(marker_.pose.orientation.x, marker_.pose.orientation.y,
+                                       marker_.pose.orientation.z, marker_.pose.orientation.w);
+        cup_origin_ = tf::Vector3(marker_.pose.position.x, marker_.pose.position.y, marker_.pose.position.z);
+        cup_center_ = cup_origin_ + tf::quatRotate(cup_rotation_, tf::Vector3(CUP_HEIGHT / 2, 0, 0));
+
         std::pair<unsigned char, tf::Vector3> left_gripper_hits = applyCollision2(world_2_gripper_left);
         std::pair<unsigned char, tf::Vector3> right_gripper_hits = applyCollision2(world_2_gripper_right);
 
-        std::cout << cupStateToString() << std::endl;
-        std::cout << "Hits left: " << std::to_string(left_gripper_hits.first)
-                  << " Hits right: " << std::to_string(right_gripper_hits.first) << std::endl;
-        std::cout << "Cup position: " << cup_origin_.x() << "," << cup_origin_.y() << "," << cup_origin_.z()
-                  << std::endl;
+        ROS_DEBUG_STREAM(cupStateToString());
+        ROS_DEBUG_STREAM("Hits left: " << std::to_string(left_gripper_hits.first)
+                                       << " Hits right: " << std::to_string(right_gripper_hits.first));
+        ROS_DEBUG_STREAM("Cup position: " << cup_origin_.x() << "," << cup_origin_.y() << "," << cup_origin_.z());
+
         switch (cup_state_)
         {
             case Cup::CupState::FALLING:
@@ -144,18 +145,15 @@ void Cup::loop()
             case Cup::CupState::IDLE:
                 // If the cup is pushed a little, rotate it back up.
                 rotateMarkerToQuaternion(STRAIGHT_UP, 0.2);
-                std::cout << "canfall" << std::endl;
                 if (canFall())
                 {
                     cup_state_ = Cup::CupState::FALLING;
                 }
-                std::cout << "check collision" << std::endl;
                 if (checkForCollision(left_gripper_hits.first, right_gripper_hits.first))
                 {
                     cup_state_ = Cup::CupState::PUSHED;
                     break;
                 }
-                std::cout << "can be grabbed" << std::endl;
                 if (canBeGrabbed(left_gripper_hits.first, right_gripper_hits.first))
                 {
                     cup_gripper_offset = cup_origin_ - world_2_grip_point.getOrigin();
@@ -229,8 +227,8 @@ void Cup::updateMarkerData()
     updateCupColorOnState();
     marker_.header.stamp = ros::Time::now();
     sendMarkerData(marker_);
-    test_marker_.header.stamp = ros::Time::now();
-    sendMarkerData(test_marker_);
+    detection_marker_.header.stamp = ros::Time::now();
+    sendMarkerData(detection_marker_);
 }
 
 ///////////////////////////////////////////
@@ -280,7 +278,7 @@ std::pair<unsigned char, tf::Vector3> Cup::applyCollision2(const tf::StampedTran
     geometry_msgs::Point hit_point;
     std_msgs::ColorRGBA hit_point_color;
 
-    for (auto& point : GRIPPER_POINTS)
+    for (const std::array<float, 3>& point : GRIPPER_POINTS)
     {
         tf::Vector3 transformed_point =
             tf::quatRotate(frame.getRotation(), tf::Vector3(point[0], point[1], point[2])) + frame.getOrigin();
@@ -309,8 +307,8 @@ std::pair<unsigned char, tf::Vector3> Cup::applyCollision2(const tf::StampedTran
             hit_point_color.a = 1;
         }
 
-        test_marker_.colors.push_back(hit_point_color);
-        test_marker_.points.push_back(hit_point);
+        detection_marker_.colors.push_back(hit_point_color);
+        detection_marker_.points.push_back(hit_point);
     }
 
     return std::make_pair(hits, directionVector);
@@ -375,6 +373,7 @@ double Cup::calculateVelocity(const tf::Vector3& old_pos, const tf::Vector3& new
     double distance = std::abs(old_pos.distance(new_pos));
 
     // Velocity in m/s over 1 frame.
+    // TODO: Should we take in account the amount of skipped frames for the time difference?
     return distance / (1.0 / FPS);
 }
 
@@ -392,23 +391,23 @@ double Cup::getDistanceFromPointToLine(const tf::Vector3& line_start, const tf::
                                        const tf::Vector3& point)
 {
     // https://en.wikipedia.org/wiki/Distance_from_a_point_to_a_line
-    tf::Vector3 v = line_end - line_start;
-    tf::Vector3 w = point - line_start;
-    double c1 = w.dot(v);
-    double c2 = v.dot(v);
+    tf::Vector3 line_vector = line_end - line_start;
+    tf::Vector3 point_to_line = point - line_start;
+    double distance_1 = point_to_line.dot(line_vector);
+    double distance_2 = line_vector.dot(line_vector);
 
-    if (c1 <= 0)
+    if (distance_1 <= 0)
     {
         return (point - line_start).length();
     }
-    else if (c2 <= c1)
+    else if (distance_2 <= distance_1)
     {
         return (point - line_end).length();
     }
     else
     {
-        double b = c1 / c2;
-        tf::Vector3 Pb = line_start + b * v;
+        double factor = distance_1 / distance_2;
+        tf::Vector3 Pb = line_start + factor * line_vector;
         return (point - Pb).length();
     }
 }
