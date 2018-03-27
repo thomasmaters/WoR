@@ -155,7 +155,7 @@ Matrix<H, W, T> Matrix<H, W, T>::identity()
 template <std::size_t H, std::size_t W, typename T>
 std::string Matrix<H, W, T>::to_string() const
 {
-    std::string temp = "[Matrix]<" + std::to_string(W) + "," + std::to_string(H) + ">\n{\n";
+    std::string temp = "[Matrix]<" + std::to_string(H) + "," + std::to_string(W) + ">\n{\n";
     for (std::size_t i = 0; i < H; ++i)
     {
         for (std::size_t j = 0; j < W; ++j)
@@ -392,5 +392,3 @@ Matrix<H, W, T> Matrix<H, W, T>::operator-(const Matrix<H, W, T>& rhs) const
     Matrix<H, W, T> temp(*this);
     return temp -= rhs;
 }
-
-

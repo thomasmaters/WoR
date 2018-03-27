@@ -13,15 +13,17 @@
 #include "robotarminterface/moveServo.h"
 #include "robotarminterface/moveServoDefinedMsg.h"
 //#include "robotarminterface/moveServoMsg.h"
-#include "robotarminterface/moveSingleServoMsg.h"
 #include "robotapplication/PickAndPlace.h"
 #include "robotapplication/arm_control_msg.h"
 #include "robotapplication/arm_position.h"
 #include "robotapplication/pickup_target.h"
+#include "robotarminterface/moveSingleServoMsg.h"
 #include "ros/ros.h"
 
-const std::size_t phisSize = 3;
-static const Matrix<1, phisSize, double> armLengths = Matrix<1, phisSize, double>({ 0, 14.6, 18.7 });
+// Official values as taken from the documentation.
+// static const Matrix<3, 1, double> armLengths = Matrix<3, 1, double>({ 0, 146, 187 });
+// Default values in the simulator.
+static const Matrix<3, 1, double> armLengths = Matrix<3, 1, double>({ 0, 180, 200 });
 
 class RosCommunication
 {
@@ -48,8 +50,8 @@ class RosCommunication
     ros::Publisher singleArmPosition;
     ros::Publisher definedArmPosition;
 
-    Matrix<1, phisSize, double> phis;
-    Matrix<1, phisSize, double> lastPhis;
+    Matrix<3, 1, double> phis;
+    Matrix<3, 1, double> lastPhis;
 };
 
 #endif /* SRC_ROSCOMMUNICATION_H_ */

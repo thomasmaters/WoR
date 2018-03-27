@@ -35,13 +35,13 @@ class InverseKinematics
         return radians * 180.0 / PI;
     }
 
-    template <std::size_t H, class T>
-    static Matrix<1, 3, T> calculatePosition(const Matrix<1, H, T>& phis, const Matrix<1, H, T>& armLenghts)
+    template <std::size_t W, class T>
+    static Matrix<3, 1, T> calculatePosition(const Matrix<W, 1, T>& phis, const Matrix<W, 1, T>& armLenghts)
     {
-        Matrix<1, 3, T> temp(0);
+        Matrix<3, 1, T> temp(0);
         double totalAngle = 0;
         double baseAngle = phis.at(0, 0);
-        for (std::size_t i = 1; i < H; ++i)
+        for (std::size_t i = 1; i < W; ++i)
         {
             totalAngle += phis.at(i, 0);
             temp[0][0] += armLenghts.at(i, 0) * std::cos(totalAngle) * std::cos(baseAngle);
@@ -53,7 +53,7 @@ class InverseKinematics
     }
 
     template <std::size_t H, class T>
-    static Matrix<H, 3, T> calculateJacobijnse(const Matrix<1, H, T>& phis, const Matrix<1, H, T>& arm)
+    static Matrix<H, 3, T> calculateJacobijnse(const Matrix<H, 1, T>& phis, const Matrix<H, 1, T>& arm)
     {
         Matrix<H, 3, T> temp(0);
         double totalAngle = 0;
@@ -188,13 +188,14 @@ class InverseKinematics
         return identity;
     }
 
-    template <std::size_t H>
-    Matrix<1, 3, double> calculateInverse(const Matrix<1, 3, double>& goal, Matrix<1, H, double>& phis,
-                                          const Matrix<1, H, double>& armLengths, double precision = 0.1,
+    template <std::size_t W>
+    Matrix<3, 1, double> calculateInverse(const Matrix<3, 1, double>& goal, Matrix<W, 1, double>& phis,
+                                          const Matrix<W, 1, double>& armLengths, double precision = 0.1,
                                           double beta = 0.1)
     {
+        std::cout << __PRETTY_FUNCTION__ << std::endl;
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-        Matrix<1, 3, double> e = calculatePosition(phis, armLengths);
+        Matrix<3, 1, double> e = calculatePosition(phis, armLengths);
         std::cout << "start pos:" << e << std::endl;
 
         for (int i = 0; i < 10000; i++)
@@ -206,33 +207,33 @@ class InverseKinematics
             }
             //        while (!(e.approxEqual(goal, precision)))
             //        {
-            Matrix<H, 3, double> jacobijnse = calculateJacobijnse(phis, armLengths);
-            Matrix<3, H, double> inverseJacobijnse;
-            Matrix<3, 3, double> identiteit = { { 1, 0, 0 }, { 0, 1, 0 }, { 0, 0, 1 } };
-            Matrix<3, H, double> transposedJacobijnse = jacobijnse.transpose();
-            if (H == 3)
-            {
-                // std::cout << "jaco:" << jacobijnse << std::endl;
-                inverseJacobijnse = jacobijnse.inverse();
-                // std::cout << "injaco" << inverseJacobijnse << std::endl;
-                //                inverseJacobijnse =
-                //                    gaussEliminatie(transposedJacobijnse * jacobijnse, identiteit) *
-                //                    transposedJacobijnse;
-                //                std::cout << "injaco2" << inverseJacobijnse << std::endl;
-            }
-            else
-            {
-                inverseJacobijnse =
-                    transposedJacobijnse * gaussEliminatie(jacobijnse * transposedJacobijnse, identiteit);
-            }
+            Matrix<W, 3, double> jacobijnse = calculateJacobijnse(phis, armLengths);
+            auto identiteit = jacobijnse.identity();
+            auto transposedJacobijnse = jacobijnse.transpose();
+            auto inverseJacobijnse = transposedJacobijnse * ((jacobijnse * transposedJacobijnse).inverse());
+            ;
+            //            if (W == 3)
+            //            {
+            //            std::cout << "jaco:" << jacobijnse << std::endl;
+            //                inverseJacobijnse = jacobijnse.inverse();
+            //                std::cout << "injaco" << inverseJacobijnse << std::endl;
+            //                //                inverseJacobijnse =
+            //                //                    gaussEliminatie(transposedJacobijnse * jacobijnse, identiteit) *
+            //                //                    transposedJacobijnse;
+            //                //                std::cout << "injaco2" << inverseJacobijnse << std::endl;
+            //            }
+            //            else
+            //            {
+            //            }
 
             //            std::cout << "jacobijnse" << jacobijnse * transposedJacobijnse << std::endl;
             //            std::cout << "inverse" << (jacobijnse * transposedJacobijnse).inverse() << std::endl;
             //	        Matrix<3, 4, double> inverseJacobijnse = transposedJacobijnse * (jacobijnse *
             // transposedJacobijnse).inverse();
+            //            std::cout << "injaco" << inverseJacobijnse << std::endl;
 
-            Matrix<1, 3, double> deltaE = (goal - e) * beta;
-            Matrix<1, H, double> deltaFie = deltaE * inverseJacobijnse;
+            Matrix<3, 1, double> deltaE = (goal - e) * beta;
+            auto deltaFie = inverseJacobijnse * deltaE;
             phis += deltaFie;
 
             if (phis.at(1, 0) <= 0)
@@ -249,10 +250,10 @@ class InverseKinematics
         }
 
         std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
-        std::cout << "Nieuwe phis";
-        for (std::size_t i = 0; i < phis.getHeight(); ++i)
+        std::cout << "Nieuwe phis: ";
+        for (std::size_t i = 0; i < phis.getWidth(); ++i)
         {
-            std::cout << std::to_string(toDegrees(phis.at(i, 0))) + ",";
+            std::cout << std::to_string(toDegrees(phis.at(0, i))) + ",";
         }
 
         std::cout << std::endl
