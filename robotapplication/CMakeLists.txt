@@ -17,10 +17,7 @@ find_package(catkin REQUIRED COMPONENTS
 
 add_message_files(
   FILES
-  arm_control_msg.msg
-  arm_position.msg
-  pickup_target.msg
-  PickAndPlace.msg
+  pick_and_place.msg
 )
 
 generate_messages(
@@ -31,8 +28,10 @@ generate_messages(
 )
 
 catkin_package(
- CATKIN_DEPENDS 
+ CATKIN_DEPENDS
  message_runtime
+ EXPORTED_TARGETS
+ robotapplication_generate_messages_cpp
 )
 
 include_directories(
@@ -41,11 +40,12 @@ include_directories(
 
 add_executable(motion_control_node 
 src/motion_control_node.cpp 
-src/RosCommunication.cpp 
+src/motion_control_controller.cpp 
+src/motion_control_interface.cpp 
 src/InverseKinematics.h )
 
 
-add_dependencies(motion_control_node ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS})
+add_dependencies(motion_control_node robotapplication_generate_messages_cpp ${${PROJECT_NAME}_EXPORTED_TARGETS} ${catkin_EXPORTED_TARGETS} ${PROJECT_NAME}_generate_messages)
 
 target_link_libraries(motion_control_node
   ${catkin_LIBRARIES}

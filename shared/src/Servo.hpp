@@ -12,6 +12,8 @@
 #include <cstdint>
 #include <string>
 
+#include <ros/console.h>
+
 class Servo
 {
   public:
@@ -174,7 +176,16 @@ class Servo
     {
         if (!canMoveToDegrees(degrees))
         {
-            return 0;
+            if (degrees < minRotation)
+            {
+                ROS_WARN("A lower then possible degrees has been given, returning lowest possible value.");
+                return inverted ? maxPulseWidth : minPulseWidth;
+            }
+            if (degrees > maxRotation)
+            {
+                ROS_WARN("A higher then possible degrees has been given, returning highest possible value.");
+                return inverted ? minPulseWidth : maxPulseWidth;
+            }
         }
 
         if (inverted)

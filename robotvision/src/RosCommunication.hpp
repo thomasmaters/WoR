@@ -8,22 +8,21 @@
 #ifndef ROSCOMMUNICATION_HPP_
 #define ROSCOMMUNICATION_HPP_
 
-#include "robotapplication/PickAndPlace.h"
+#include "robotapplication/pick_and_place.h"
 #include "ros/ros.h"
 
 class RosCommunication
 {
-public:
+  public:
     RosCommunication();
 
-	void sendPickupLocation(robotapplication::PickAndPlace& message);
+    void sendPickupLocation(robotapplication::pick_and_place& message);
 
     virtual ~RosCommunication();
 
-private:
-	ros::NodeHandle publisherNode;
-	ros::Publisher pickupLocationPublisher;
+  private:
+    ros::NodeHandle publisherNode;
+    ros::Publisher pickupLocationPublisher;
 };
-
 
 #endif /* ROSCOMMUNICATION_HPP_ */

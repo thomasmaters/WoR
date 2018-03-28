@@ -47,7 +47,6 @@ class InverseKinematics
             temp[0][0] += armLenghts.at(i, 0) * std::cos(totalAngle) * std::cos(baseAngle);
             temp[1][0] += armLenghts.at(i, 0) * std::cos(totalAngle) * std::sin(baseAngle);
             temp[2][0] += armLenghts.at(i, 0) * std::sin(totalAngle);
-            //            std::cout << "temp " << i << ": " << temp << std::endl;
         }
         return temp;
     }
@@ -69,7 +68,6 @@ class InverseKinematics
             temp[2][1] += arm.at(i, 0) * std::cos(totalAngle);                         // z2
             if (i >= 2)
             {
-                // std::cout << "kaas" << std::endl;
                 temp[0][2] += arm.at(i, 0) * -std::sin(totalAngle) * std::cos(baseAngle);  // x3
                 temp[1][2] += arm.at(i, 0) * -std::sin(totalAngle) * std::sin(baseAngle);  // y3
                 temp[2][2] += arm.at(i, 0) * std::cos(totalAngle);                         // z3
@@ -84,185 +82,99 @@ class InverseKinematics
         return temp;
     }
 
-    template <std::size_t W, std::size_t H, class T>
-    static void swapRows(Matrix<W, H, T>& matrix, std::size_t row, std::size_t otherRow)
+    template <std::size_t H>
+    bool inSolutionSpace(const Matrix<H, 1, double>& phis, const Matrix<H, 2, double>& solutionSpace)
     {
-        matrix[row].swap(matrix[otherRow]);
-    }
-
-    template <std::size_t W, std::size_t H, class T>
-    static std::size_t getHighestRow(Matrix<W, H, T>& matrix, std::size_t row)
-    {
-        T highestValue = matrix.at(row, row);
-        std::size_t highestIndex = row;
-        for (std::size_t i = row; i < H; ++i)
+        for (std::size_t i = 0; i < H; ++i)
         {
-            T curValue = matrix.at(i, row);
-            if (curValue == 1)
+            if (toDegrees(phis.at(i, 0)) < solutionSpace.at(i, 0) || toDegrees(phis.at(i, 0)) > solutionSpace.at(i, 1))
             {
-                return i;
-            }
-            else if (curValue < highestValue && curValue != 0)
-            {
-                highestIndex = i;
-                highestValue = curValue;
+                return false;
             }
         }
-        return highestIndex;
+        return true;
     }
 
-    template <std::size_t W, std::size_t H, class T>
-    static double pivaltFactor(Matrix<W, H, T>& matrix, std::size_t x, std::size_t y)
+    template <std::size_t H>
+    void limitToSolutionSpace(Matrix<H, 1, double>& phis, const Matrix<H, 2, double>& solutionSpace)
     {
-        double value = matrix.at(x, y);
-        if (value == 0 || (x == y && value == 1))
+        for (std::size_t i = 0; i < H; ++i)
         {
-            return 0;
-        }
-        else if (x == y && value != 1)
-        {
-            return (value - 1) / value;
-        }
-        else
-        {
-            return value;
-        }
-    }
-
-    template <std::size_t W, class T>
-    static std::array<T, W> multiplyArray(std::array<T, W> lhs, T factor)
-    {
-        for (std::size_t a = 0; a < W; a++)
-        {
-            lhs[a] = lhs[a] * factor;
-        }
-        return lhs;
-    }
-
-    template <std::size_t W, class T>
-    static void subtractArray(std::array<T, W>& lhs, const std::array<T, W>& rhs)
-    {
-        for (std::size_t a = 0; a < W; a++)
-        {
-            lhs[a] -= rhs[a];
-        }
-    }
-
-    template <std::size_t W, std::size_t H, class T>
-    static Matrix<W, H, T> gaussEliminatie(Matrix<W, H, T> matrix, Matrix<W, H, T> identity)
-    {
-        if (W != H)
-        {
-            throw std::runtime_error("Error: Can't get inverse of non square Matrix.");
-        }
-
-        for (std::size_t row = 0; row < H; ++row)
-        {
-            std::size_t highestRow = getHighestRow(matrix, row);
-            if (row != highestRow)
+            if (toDegrees(phis.at(i, 0)) < solutionSpace.at(i, 0))
             {
-                swapRows(matrix, row, highestRow);
-                swapRows(identity, row, highestRow);
+                phis.at(i, 0) = toRadians(solutionSpace.at(i, 0));
             }
-
-            double pivatFactor = pivaltFactor(matrix, row, row);
-            std::array<T, W> factorRow = matrix.at(row);
-
-            subtractArray(factorRow, multiplyArray(matrix.at(row), pivatFactor));
-            subtractArray(matrix[row], multiplyArray(matrix.at(row), pivatFactor));
-            subtractArray(identity[row], multiplyArray(identity.at(row), pivatFactor));
-
-            for (std::size_t subRow = 0; subRow < H; ++subRow)
+            else if (toDegrees(phis.at(i, 0)) > solutionSpace.at(i, 1))
             {
-                double afactor = pivaltFactor(matrix, subRow, row);
-
-                subtractArray(matrix[subRow], multiplyArray(factorRow, afactor));
-                subtractArray(identity[subRow], multiplyArray(identity.at(row), afactor));
-            }
-            if (matrix.at(row, row) == 0)
-            {
-                //	            throw std::runtime_error(
-                //	                "Determinant = 0, matrix is not invertible.");
+                phis.at(i, 0) = toRadians(solutionSpace.at(i, 1));
             }
         }
-        return identity;
     }
 
     template <std::size_t W>
     Matrix<3, 1, double> calculateInverse(const Matrix<3, 1, double>& goal, Matrix<W, 1, double>& phis,
-                                          const Matrix<W, 1, double>& armLengths, double precision = 0.1,
+                                          const Matrix<W, 1, double>& armLengths,
+                                          const Matrix<W, 2, double>& solutionSpace, double precision = 0.1,
                                           double beta = 0.1)
     {
         std::cout << __PRETTY_FUNCTION__ << std::endl;
         std::chrono::high_resolution_clock::time_point t1 = std::chrono::high_resolution_clock::now();
-        Matrix<3, 1, double> e = calculatePosition(phis, armLengths);
-        std::cout << "start pos:" << e << std::endl;
+        Matrix<3, 1, double> currentPosition = calculatePosition(phis, armLengths);
+        std::cout << "start pos:" << currentPosition << std::endl;
+        std::cout << "start phis: " << phis << std::endl;
 
         for (int i = 0; i < 10000; i++)
         {
-            if (e.approxEqual(goal, precision))
+            if (currentPosition.approxEqual(goal, precision))
             {
                 std::cout << "approx equal" << std::endl;
                 break;
             }
-            //        while (!(e.approxEqual(goal, precision)))
-            //        {
+
             Matrix<W, 3, double> jacobijnse = calculateJacobijnse(phis, armLengths);
             auto identiteit = jacobijnse.identity();
             auto transposedJacobijnse = jacobijnse.transpose();
             auto inverseJacobijnse = transposedJacobijnse * ((jacobijnse * transposedJacobijnse).inverse());
-            ;
-            //            if (W == 3)
-            //            {
-            //            std::cout << "jaco:" << jacobijnse << std::endl;
-            //                inverseJacobijnse = jacobijnse.inverse();
-            //                std::cout << "injaco" << inverseJacobijnse << std::endl;
-            //                //                inverseJacobijnse =
-            //                //                    gaussEliminatie(transposedJacobijnse * jacobijnse, identiteit) *
-            //                //                    transposedJacobijnse;
-            //                //                std::cout << "injaco2" << inverseJacobijnse << std::endl;
-            //            }
-            //            else
-            //            {
-            //            }
 
-            //            std::cout << "jacobijnse" << jacobijnse * transposedJacobijnse << std::endl;
-            //            std::cout << "inverse" << (jacobijnse * transposedJacobijnse).inverse() << std::endl;
-            //	        Matrix<3, 4, double> inverseJacobijnse = transposedJacobijnse * (jacobijnse *
-            // transposedJacobijnse).inverse();
-            //            std::cout << "injaco" << inverseJacobijnse << std::endl;
-
-            Matrix<3, 1, double> deltaE = (goal - e) * beta;
+            Matrix<3, 1, double> deltaE = (goal - currentPosition) * beta;
             auto deltaFie = inverseJacobijnse * deltaE;
-            phis += deltaFie;
+            Matrix<3, 1, double> newEndPos = calculatePosition(phis, armLengths);
 
-            if (phis.at(1, 0) <= 0)
+            Matrix<3, 1, double> check = (newEndPos - (currentPosition + deltaE));
+
+            if (check[0][0] > precision && check[1][0] > precision && check[2][0] > precision)
             {
-                phis[1][0] = toRadians(45);
+                beta /= 1.8;
+                continue;
             }
-
-            if (phis.at(2, 0) >= 0)
+            else
             {
-                phis[2][0] = toRadians(-45);
+                phis += deltaFie;
+                currentPosition = newEndPos;
+                beta *= 1.1;
             }
-
-            e = calculatePosition(phis, armLengths);
         }
 
         std::chrono::high_resolution_clock::time_point t2 = std::chrono::high_resolution_clock::now();
         std::cout << "Nieuwe phis: ";
-        for (std::size_t i = 0; i < phis.getWidth(); ++i)
+        for (std::size_t i = 0; i < phis.getHeight(); ++i)
         {
-            std::cout << std::to_string(toDegrees(phis.at(0, i))) + ",";
+            std::cout << std::to_string(toDegrees(phis.at(i, 0))) + ",";
         }
 
         std::cout << std::endl
                   << "Calculation completed in "
                   << std::chrono::duration_cast<std::chrono::microseconds>(t2 - t1).count() << "microseconds"
                   << std::endl;
-        std::cout << "nieuwe endpos:" << e << std::endl;
+        std::cout << "nieuwe endpos:" << currentPosition << std::endl;
 
-        return e;
+        if (!inSolutionSpace(phis, solutionSpace))
+        {
+            std::cout << "Some angles are outside solution space, closest possible valid values will be used. "
+                      << std::endl;
+        }
+
+        return currentPosition;
     }
 
     virtual ~InverseKinematics()

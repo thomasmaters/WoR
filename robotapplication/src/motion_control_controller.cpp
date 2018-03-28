@@ -5,50 +5,50 @@
  *      Author: thomas
  */
 
-#include "RosCommunication.h"
+#include "motion_control_controller.h"
+
 #include <thread>
 
-RosCommunication::RosCommunication()
+MotionControl::MotionControl() : MotionControlInterface()
 {
-    target_position_subscriber_ =
-        subsriber_node_.subscribe("pickupTarget", 10, &RosCommunication::moveToTargetCallback, this);
-    multipleArmPositions =
-        publisher_node_.advertise<robotarminterface::moveMultipleServosMsg>("moveMultipleServos", 10);
-    singleArmPosition = publisher_node_.advertise<robotarminterface::moveSingleServoMsg>("moveSingleServo", 10);
-    definedArmPosition =
-        publisher_node_.advertise<robotarminterface::moveServoDefinedMsg>("moveServoToDefinedPosition", 10);
-
     phis = { 0.1, InverseKinematics::toRadians(90.0), InverseKinematics::toRadians(-90.0) };
     lastPhis = phis;
+    armLengths = getArmLenghtConfiguration();
+    solutionSpace = getServoConfigurationSpace();
 
-    std::cout << __PRETTY_FUNCTION__ << std::endl;
+    std::cout << "Armlengths: " << armLengths << std::endl;
+    std::cout << "SolutionSpace: " << solutionSpace << std::endl;
     ros::spin();
 }
 
-void RosCommunication::moveToTargetCallback(const robotapplication::PickAndPlace msg)
+void MotionControl::moveToTarget(const robotapplication::pick_and_place msg)
 {
     std::cout << __PRETTY_FUNCTION__ << std::endl;
     moveToPos(msg.target.x, msg.target.y, (msg.target.z + 20), msg.targetRotation);
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(4));
     moveToPos(msg.target.x, msg.target.y, (msg.target.z - 20), msg.targetRotation);
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(4));
     moveToPos(msg.target.x, msg.target.y, (msg.target.z - 20), msg.targetRotation, true);
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(4));
     moveToPos(msg.target.x, msg.target.y, (msg.target.z + 40), msg.targetRotation, true);
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(4));
     moveToPos(msg.dest.x, msg.dest.y, (msg.dest.z + 20), msg.destRotation, true);
-    std::this_thread::sleep_for(std::chrono::seconds(2));
+    std::this_thread::sleep_for(std::chrono::seconds(4));
     moveToPos(msg.dest.x, msg.dest.y, (msg.dest.z + 20), msg.destRotation);
+    std::this_thread::sleep_for(std::chrono::seconds(4));
+    robotarminterface::moveServoDefinedMsg moveServoDefinedMsg;
+    moveServoDefinedMsg.position = "PARK";
+    publishDefinedServoMsg(moveServoDefinedMsg);
 }
 
-void RosCommunication::moveToPos(const float y, const float x, const float z, const float rotation,
-                                 const bool gripperState)
+void MotionControl::moveToPos(const float y, const float x, const float z, const float rotation,
+                              const bool gripperState)
 {
     bool inverseRotation = y < 0;
     Matrix<3, 1, double> goal = { x, y, z };
     std::cout << "goal: " << goal << std::endl;
     lastPhis = phis;
-    InverseKinematics::getInstance().calculateInverse(goal, lastPhis, armLengths);
+    InverseKinematics::getInstance().calculateInverse(goal, lastPhis, armLengths, solutionSpace);
 
     robotarminterface::moveMultipleServosMsg moveServosMsg;
     robotarminterface::moveServo moveSingleServoMsg;
@@ -73,14 +73,10 @@ void RosCommunication::moveToPos(const float y, const float x, const float z, co
     moveServosMsg.servos.push_back(moveSingleServoMsg);
 
     moveServosMsg.time = 4000;
-    multipleArmPositions.publish(moveServosMsg);
-
-    //    robotarminterface::moveServoDefinedMsg moveServoDefinedMsg;
-    //    moveServoDefinedMsg.position = "PARK";
-    //    definedArmPosition.publish(moveServoDefinedMsg);
+    publishMultipleServoMsg(moveServosMsg);
 }
 
-RosCommunication::~RosCommunication()
+MotionControl::~MotionControl()
 {
     // TODO Auto-generated destructor stub
 }

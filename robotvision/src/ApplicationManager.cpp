@@ -9,7 +9,7 @@
 #include <regex>
 #include <thread>
 
-#include "robotapplication/PickAndPlace.h"
+#include "robotapplication/pick_and_place.h"
 #include "ros/ros.h"
 
 #include "ApplicationManager.hpp"
@@ -113,7 +113,7 @@ void ApplicationManager::specialCommandParser(std::string& command)
             std::vector<ShapeDetectResult> targetVector;
             if (findSingleObject("white circle", targetVector))
             {
-                robotapplication::PickAndPlace message;
+                robotapplication::pick_and_place message;
                 message.dest.x = resultVector.at(0).xPositionRL - 60;
                 message.dest.y = resultVector.at(0).yPositionRL;
                 message.dest.z = 70;

@@ -7,12 +7,12 @@
 
 #include "RosCommunication.hpp"
 
-
-RosCommunication::RosCommunication()  :   pickupLocationPublisher(publisherNode.advertise<robotapplication::PickAndPlace>("pickupTarget", 1000))
+RosCommunication::RosCommunication()
+  : pickupLocationPublisher(publisherNode.advertise<robotapplication::pick_and_place>("pickupTarget", 1000))
 {
 }
 
- void RosCommunication::sendPickupLocation(robotapplication::PickAndPlace& message)
+void RosCommunication::sendPickupLocation(robotapplication::pick_and_place& message)
 {
     if (ros::ok())
     {

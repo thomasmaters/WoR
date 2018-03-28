@@ -7,7 +7,7 @@
 #include <iostream>
 #include "InverseKinematics.h"
 #include "Matrix.hpp"
-#include "RosCommunication.h"
+#include "motion_control_controller.h"
 #include "ros/console.h"
 #include "ros/ros.h"
 
@@ -16,7 +16,7 @@ int main(int argc, char** argv)
     try
     {
         ros::init(argc, argv, "motion_control_node");
-        RosCommunication communication;
+        MotionControl communication;
     }
     catch (std::exception& e)
     {
