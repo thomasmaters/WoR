@@ -6,49 +6,75 @@
 #include <opencv2/opencv.hpp>
 
 #include <ctime>
+#include <mutex>
 #include <typeinfo>
 
 class ImageDisplayer
 {
   public:
-    ImageDisplayer()
+    static ImageDisplayer& getInst()
     {
+        static ImageDisplayer inst;
+        return inst;
     }
 
     virtual ~ImageDisplayer()
     {
     }
 
-    static void displayWindow(const cv::Mat& source)
+    void updateWindows()
     {
-        std::string windowName = "test";
-        // cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
-        imshow(windowName, source);
-        cv::waitKey(5);
+        for (std::map<std::string, std::pair<bool, cv::Mat>>::iterator it = imageStorage.begin();
+             it != imageStorage.end(); ++it)
+        {
+            if (it->second.first)
+            {
+                it->second.first = false;
+                imshow(it->first, it->second.second);
+            }
+        }
     }
 
-    static void displayWindow(const cv::Mat& source, const std::string& windowName)
+    void displayWindow(const cv::Mat& source, const std::string& windowName)
     {
-        cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
-        imshow(windowName, source);
-        cv::waitKey(5);
+        checkMatStorage(windowName, source);
     }
 
-    static void displayWindow(const std::type_info& typeInfo, const cv::Mat& source)
+    void displayWindow(const std::type_info& typeInfo, const cv::Mat& source)
     {
         std::string windowName = std::string(typeInfo.name()) + "_window";
-        //   cv::namedWindow(windowName, cv::WINDOW_AUTOSIZE);
-        imshow(windowName, source);
-        cv::waitKey(5);
+        checkMatStorage(windowName, source);
     }
 
-    static void displayWindowMasked(const std::type_info& typeInfo, const cv::Mat& source, const cv::Mat& mask)
+    void displayWindowMasked(const std::type_info& typeInfo, const cv::Mat& source, const cv::Mat& mask)
     {
         cv::Mat output;
         source.copyTo(output, mask);
         displayWindow(typeInfo, output);
-        cv::waitKey(5);
     }
+
+  private:
+    ImageDisplayer() /*: imageStorageMutex()*/
+    {
+    }
+
+    void checkMatStorage(const std::string& windowName, cv::Mat source)
+    {
+        //        imageStorageMutex.lock();
+        if (imageStorage.find(windowName) == imageStorage.end())
+        {
+            imageStorage.insert(std::make_pair(windowName, std::make_pair(false, source)));
+        }
+        else
+        {
+            imageStorage.at(windowName).first = true;
+            imageStorage.at(windowName).second = source;
+        }
+        //        imageStorageMutex.unlock();
+    }
+
+    std::map<std::string, std::pair<bool, cv::Mat>> imageStorage;
+    //    std::mutex imageStorageMutex;
 };
 
 #endif /* IMAGEDISPLAYER_HPP_ */

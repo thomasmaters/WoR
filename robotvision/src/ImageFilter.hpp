@@ -17,11 +17,11 @@
 class ImageFilter
 {
   public:
-    ImageFilter() : display(ImageDisplayer()), filterMutex()
+    ImageFilter() : filterMutex()
     {
     }
 
-    ImageFilter(const ImageFilter& other) : display(other.display), filterMutex()
+    ImageFilter(const ImageFilter& other) : filterMutex()
     {
     }
 
@@ -115,7 +115,6 @@ class ImageFilter
      */
     cv::Mat applyRemovingShadows2(const cv::Mat& source);
 
-    ImageDisplayer display;  /// Image displayer instance.
     std::mutex filterMutex;
 };
 

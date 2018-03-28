@@ -145,7 +145,7 @@ void ShapeFilter::findRectangles(const cv::Mat& source, std::vector<ShapeDetectR
                         cv::Point(subResult.xPosition, subResult.yPosition + 25), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8,
                         cv::Scalar(200, 200, 250), 0.1);
         }
-        display.displayWindow(drawingClone, "ShapeFilter::findRectangles result");
+        ImageDisplayer::getInst().displayWindow(drawingClone, "ShapeFilter::findRectangles result");
     }
 }
 
@@ -199,7 +199,7 @@ void ShapeFilter::findCircles(const cv::Mat& source, std::vector<ShapeDetectResu
 
     if (showResult)
     {
-        display.displayWindow(drawing.clone(), "ShapeFilter::FindCircles result");
+        ImageDisplayer::getInst().displayWindow(drawing.clone(), "ShapeFilter::FindCircles result");
     }
 }
 

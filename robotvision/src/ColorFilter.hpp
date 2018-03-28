@@ -18,7 +18,7 @@
 class ColorFilter
 {
   public:
-    ColorFilter() : display(ImageDisplayer()), filter(ImageFilter()), colorFilterMutex()
+    ColorFilter() : filter(ImageFilter()), colorFilterMutex()
     {
     }
 
@@ -58,8 +58,7 @@ class ColorFilter
     static void applyRange(const cv::Mat& source, const cv::Scalar& lowerBound, const cv::Scalar& upperBound,
                            cv::Mat& result);
 
-    ImageDisplayer display;  /// Instance for displaying the images.
-    ImageFilter filter;      /// Instance for applieng color specific filters.
+    ImageFilter filter;  /// Instance for applieng color specific filters.
 
     std::mutex colorFilterMutex;
 };

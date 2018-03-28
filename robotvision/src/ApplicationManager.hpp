@@ -32,7 +32,6 @@ class ApplicationManager
     bool findSingleObject(const std::string& command, std::vector<ShapeDetectResult>& result);
 
     ImageFilter imageFilter;
-    ImageDisplayer imageDisplayer;
     InputHandler inputHandler;
     ColorFilter colorFinder;
     ShapeFilter shapeFinder;

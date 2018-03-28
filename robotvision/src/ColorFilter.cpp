@@ -49,7 +49,7 @@ cv::Mat ColorFilter::applyFilter(const cv::Mat& source, const ColorFilter::Color
 
     if (showResult)
     {
-        display.displayWindow(result.clone(), "ColorFiltersApplied");
+        ImageDisplayer::getInst().displayWindow(result.clone(), "ColorFiltersApplied");
     }
 
     colorFilterMutex.unlock();

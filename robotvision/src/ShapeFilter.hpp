@@ -25,7 +25,7 @@ class ShapeFilter
         TRIANGLE = 8
     };
 
-    ShapeFilter() : display(ImageDisplayer()), pixelsToRLFactor(0), shapeFilterMutex()
+    ShapeFilter() : pixelsToRLFactor(0), shapeFilterMutex()
     {
     }
 
@@ -110,8 +110,6 @@ class ShapeFilter
      * @author Thomas Maters
      */
     static void drawCircle(cv::Mat& source, const cv::Vec3f& circleData);
-
-    ImageDisplayer display;  /// Visualizer.
 
     float pixelsToRLFactor;  /// Factor for converting pixels to mm.
 

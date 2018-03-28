@@ -18,7 +18,6 @@
 
 ApplicationManager::ApplicationManager()
   : imageFilter(ImageFilter())
-  , imageDisplayer(ImageDisplayer())
   , inputHandler(InputHandler())
   , colorFinder()
   , shapeFinder()
@@ -41,7 +40,6 @@ void ApplicationManager::start()
     while (1)
     {
         std::string command = inputHandler.getUserInput();
-        cv::waitKey(500);
         specialCommandParser(command);
         cv::waitKey(100);
     }

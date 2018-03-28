@@ -81,8 +81,6 @@ class InputHandler
             cap.read(frame);
             output = frame.clone();
             //            frame.copyTo(output);
-
-            cv::waitKey(50);
         }
         catch (std::exception& e)
         {
@@ -95,7 +93,6 @@ class InputHandler
     void video_capture()
     {
         cv::Mat windowFrame;
-        cv::namedWindow("Video_Window");
         while (cap.isOpened())
         {
             videoCaptureMutex.lock();
@@ -105,8 +102,7 @@ class InputHandler
 
             cv::line(windowFrame, cv::Point(0, frame.rows / 2), cv::Point(frame.cols, frame.rows / 2),
                      cv::Scalar(0, 0, 255));
-            cv::imshow("Video_Window", windowFrame);
-            cv::waitKey(5);
+            ImageDisplayer::getInst().displayWindow(windowFrame, "video_capture");
         }
     }
 

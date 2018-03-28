@@ -43,7 +43,7 @@ cv::Mat ImageFilter::applyFilter(cv::Mat source, ImageFilter::FilterType filter,
 
     if (showResult)
     {
-        display.displayWindow(source.clone(), "ImageFiltersApplied");
+        ImageDisplayer::getInst().displayWindow(source.clone(), "ImageFiltersApplied");
     }
 
     filterMutex.unlock();
@@ -150,8 +150,8 @@ cv::Mat ImageFilter::applyRemovingShadows(const cv::Mat& source)
     cv::merge(result_planes, result);
     cv::merge(result_norm_planes, result_norm);
 
-    display.displayWindow(result, "shadow_result");
-    display.displayWindow(result_norm, "shadow_result_norm");
+    ImageDisplayer::getInst().displayWindow(result, "shadow_result");
+    ImageDisplayer::getInst().displayWindow(result_norm, "shadow_result_norm");
 
     return source + result;
 }
@@ -164,6 +164,6 @@ cv::Mat ImageFilter::applyRemovingShadows2(const cv::Mat& source)
     cv::cvtColor(source, convertedSource, CV_BGR2GRAY);
 
     cv::adaptiveThreshold(convertedSource, result, 255, cv::ADAPTIVE_THRESH_GAUSSIAN_C, cv::THRESH_TRUNC, 5, 7);
-    display.displayWindow(result, "shadow2_result");
+    ImageDisplayer::getInst().displayWindow(result, "shadow2_result");
     return source;
 }
