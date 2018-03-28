@@ -2,7 +2,7 @@
  * motion_control_interface.cpp
  *
  *  Created on: Mar 28, 2018
- *      Author: thomas
+ *      Author: Thomas Maters
  */
 
 #include "motion_control_interface.h"

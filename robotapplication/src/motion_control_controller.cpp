@@ -2,7 +2,7 @@
  * RosCommunication.cpp
  *
  *  Created on: Apr 5, 2017
- *      Author: thomas
+ *      Author: Thomas Maters
  */
 
 #include "motion_control_controller.h"
