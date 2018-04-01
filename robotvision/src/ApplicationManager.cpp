@@ -26,21 +26,32 @@ ApplicationManager::ApplicationManager()
   , globalFilter(static_cast<ImageFilter::FilterType>(0))
   , showFilterProgress(false)
 {
-    if (!inputHandler.startVideoCapture(1))
+    if (!inputHandler.openVideoCapture(1))
     {
-        inputHandler.startVideoCapture(0);
+        inputHandler.openVideoCapture(0);
     }
-    // shapeFinder.setRealLifeConversionRate(colorFinder.applyFilter(inputHandler.getVideoCaptureFrame(),ColorFilter::Color::WHITE),
-    // 100);
+    inputHandler.displayVideoCapture();
+    shapeFinder.setRealLifeConversionRate(
+        colorFinder.applyFilter(inputHandler.getVideoCaptureFrame(), ColorFilter::Color::WHITE), 100);
 }
 
 void ApplicationManager::start()
 {
     cv::waitKey(1000);
+
+    AsyncGetline ag;
+    std::string input;
+
+    std::cout << "Enter command:" << std::endl;
     while (1)
     {
-        std::string command = inputHandler.getUserInput();
-        specialCommandParser(command);
+        input = ag.GetLine();
+        if (!input.empty())
+        {
+            specialCommandParser(input);
+            std::cout << "Enter command:" << std::endl;
+        }
+        ImageDisplayer::getInst().updateWindows();
         cv::waitKey(100);
     }
 }
@@ -86,7 +97,7 @@ void ApplicationManager::specialCommandParser(std::string& command)
     {
         std::pair<ColorFilter::Color, ShapeFilter::Shape> streamFindParameters = findCommandParser(command);
 
-        std::thread test = std::thread([this, streamFindParameters] {
+        std::thread tempThread = std::thread([this, streamFindParameters] {
             while (true)
             {
                 shapeFindMutex.lock();
@@ -98,7 +109,8 @@ void ApplicationManager::specialCommandParser(std::string& command)
                 shapeFindMutex.unlock();
             }
         });
-        test.detach();
+        filterStreamThread.swap(tempThread);
+        filterStreamThread.detach();
         return;
     }
     if (command.find("find") != std::string::npos)
@@ -112,14 +124,14 @@ void ApplicationManager::specialCommandParser(std::string& command)
             if (findSingleObject("white circle", targetVector))
             {
                 robotapplication::pick_and_place message;
-                message.dest.x = resultVector.at(0).xPositionRL - 60;
-                message.dest.y = resultVector.at(0).yPositionRL;
-                message.dest.z = 70;
-                message.destRotation = resultVector.at(0).rotation;
-                message.target.x = targetVector.at(0).xPositionRL - 60;
-                message.target.y = targetVector.at(0).yPositionRL;
-                message.target.z = 70;
-                message.targetRotation = 0;
+                message.target.x = -1 * resultVector.at(0).xPositionRL + 10;
+                message.target.y = resultVector.at(0).yPositionRL;
+                message.target.z = 90;
+                message.targetRotation = resultVector.at(0).rotation;
+                message.dest.x = -1 * targetVector.at(0).xPositionRL + 10;
+                message.dest.y = targetVector.at(0).yPositionRL;
+                message.dest.z = 90;
+                message.destRotation = 0;
                 std::cout << "Going to: " << message.dest << " from: " << message.target << std::endl;
                 rosCommunication.sendPickupLocation(message);
             }
@@ -146,7 +158,6 @@ void ApplicationManager::specialCommandParser(std::string& command)
         std::cout << "-showsteps [1/0]" << std::endl;
         std::cout << "-find [color*] [shape*]" << std::endl;
         std::cout << "-filterstream [color*] [shape*]" << std::endl;
-        std::cout << "-showvideo" << std::endl;
         std::cout << "-help" << std::endl;
         std::cout << "-quit" << std::endl;
         std::cout << "----------------------" << std::endl;
@@ -155,12 +166,6 @@ void ApplicationManager::specialCommandParser(std::string& command)
     if (command.find("quit") != std::string::npos)
     {
         exit(0);
-    }
-    if (command.find("showvideo") != std::string::npos)
-    {
-        std::thread video([this] { inputHandler.video_capture(); });
-        video.detach();
-        return;
     }
     std::cout << "Not a valid command." << std::endl;
 }

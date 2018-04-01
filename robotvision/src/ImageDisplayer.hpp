@@ -9,6 +9,8 @@
 #include <mutex>
 #include <typeinfo>
 
+#include "AsyncGetLine.hpp"
+
 class ImageDisplayer
 {
   public:

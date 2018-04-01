@@ -7,6 +7,7 @@
 
 #include <iostream>
 #include <mutex>
+#include <thread>
 
 /**
  * Handles video capture and image reading.
@@ -60,7 +61,7 @@ class InputHandler
      * @return True if succesfully started the video capture.
      * @author Thomas Maters
      */
-    bool startVideoCapture(int device = 0)
+    bool openVideoCapture(int device = 0)
     {
         cap = cv::VideoCapture(device);
         return cap.isOpened();
@@ -90,31 +91,35 @@ class InputHandler
         return output;
     }
 
-    void video_capture()
+    void displayVideoCapture()
     {
-        cv::Mat windowFrame;
-        while (cap.isOpened())
-        {
-            videoCaptureMutex.lock();
-            cap >> frame;
-            windowFrame = frame.clone();
-            videoCaptureMutex.unlock();
+        std::thread video([this] {
+            cv::Mat windowFrame;
+            while (cap.isOpened())
+            {
+                videoCaptureMutex.lock();
+                cap >> frame;
+                windowFrame = frame.clone();
+                videoCaptureMutex.unlock();
 
-            cv::line(windowFrame, cv::Point(0, frame.rows / 2), cv::Point(frame.cols, frame.rows / 2),
-                     cv::Scalar(0, 0, 255));
-            ImageDisplayer::getInst().displayWindow(windowFrame, "video_capture");
-        }
+                cv::line(windowFrame, cv::Point(0, frame.rows / 2), cv::Point(frame.cols, frame.rows / 2),
+                         cv::Scalar(0, 0, 255));
+                ImageDisplayer::getInst().displayWindow(windowFrame, "video_capture");
+                std::this_thread::sleep_for(std::chrono::milliseconds(50));
+            }
+        });
+        video.detach();
     }
 
-    cv::Mat getWebcamFrame()
-    {
-        cv::Mat camFrame;
-
-        videoCaptureMutex.lock();
-        camFrame = frame.clone();
-        videoCaptureMutex.unlock();
-        return camFrame;
-    }
+    //    cv::Mat getWebcamFrame()
+    //    {
+    //        cv::Mat camFrame;
+    //
+    //        videoCaptureMutex.lock();
+    //        camFrame = frame.clone();
+    //        videoCaptureMutex.unlock();
+    //        return camFrame;
+    //    }
 
     /**
      * Gets one line from the console.

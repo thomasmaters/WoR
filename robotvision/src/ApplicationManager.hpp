@@ -39,6 +39,7 @@ class ApplicationManager
     RosCommunication rosCommunication;
 
     std::mutex shapeFindMutex;
+    std::thread filterStreamThread;
 
     ImageFilter::FilterType globalFilter;
     bool showFilterProgress;

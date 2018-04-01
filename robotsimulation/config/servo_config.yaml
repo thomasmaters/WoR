@@ -7,4 +7,4 @@ servos:
   gripper: [5, "gripper", -90, 90, 700, 2400, -90, 90, 0.16,false]
 sim_servos:
   gripper: [2, -0.02, 0.02] 
-arm_lengths: [0.0, 0.18, 0.2]
+arm_lengths: [0.0, 0.148, 0.205]
