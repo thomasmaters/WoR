@@ -13,4 +13,11 @@ Tijdens het compileren met '-Wconversion' kan het voorkomen dat er conversion wa
 - Ros Lunar 1.13.6
 - C++ 11
 
+### Compilatie instructies ###
 
+Plaats deze package in een catkin workspace.
+Voer vervolgens het volgende commando uit in een bash shell.
+
+```
+catkin_make --pkg robotapplication
+```
