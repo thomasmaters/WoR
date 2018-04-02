@@ -16,15 +16,33 @@
 // Default values in the simulator.
 // static const Matrix<3, 1, double> armLengths = Matrix<3, 1, double>({ 0, 180, 200 });
 
+/**
+ * Controls what kind of motion to be calculated.
+ * @author Thomas Maters
+ */
 class MotionControl : public MotionControlInterface
 {
   public:
     MotionControl();
     virtual ~MotionControl();
 
+    /**
+     * Starts sequence of moving to a target.
+     * @param msg
+     * @author Thomas Maters
+     */
     void moveToTarget(const robotapplication::pick_and_place msg);
 
   private:
+    /**
+     * Calculates how to get to a position and sends the correct messages.
+     * @param x
+     * @param y
+     * @param z
+     * @param rotation in degrees
+     * @param gripperState True for gripper open.
+     * @author Thomas Maters
+     */
     void moveToPos(const float x, const float y, const float z, const float rotation, const bool gripperState = false);
 
   private:

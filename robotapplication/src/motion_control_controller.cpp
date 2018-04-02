@@ -9,9 +9,9 @@
 
 #include <thread>
 
-MotionControl::MotionControl() : MotionControlInterface()
+MotionControl::MotionControl()
+  : MotionControlInterface(), phis({ 0.1, InverseKinematics::toRadians(90.0), InverseKinematics::toRadians(-90.0) })
 {
-    phis = { 0.1, InverseKinematics::toRadians(90.0), InverseKinematics::toRadians(-90.0) };
     lastPhis = phis;
     armLengths = getArmLenghtConfiguration();
     solutionSpace = getServoConfigurationSpace();
@@ -44,7 +44,6 @@ void MotionControl::moveToTarget(const robotapplication::pick_and_place msg)
 void MotionControl::moveToPos(const float y, const float x, const float z, const float rotation,
                               const bool gripperState)
 {
-    bool inverseRotation = y < 0;
     Matrix<3, 1, double> goal = { x, y, z };
     std::cout << "goal: " << goal << std::endl;
     lastPhis = phis;

@@ -41,12 +41,6 @@ class MotionControlInterface
     void publishMultipleServoMsg(const robotarminterface::moveMultipleServosMsg& msg);
 
     /**
-     * Publishes a moveSingleServoMsg message.
-     * @param msg To publish.
-     */
-    void publishSingleServoMsg(const robotarminterface::moveSingleServoMsg& msg);
-
-    /**
      * Publishes a moveServoDefinedMsg message.
      * @param msg To publish.
      */
@@ -69,7 +63,6 @@ class MotionControlInterface
     ros::NodeHandle publisher_node_;
     ros::Subscriber target_position_subscriber_;
     ros::Publisher multiple_arm_pos_publisher_;
-    ros::Publisher single_arm_pos_publisher_;
     ros::Publisher defined_arm_pos_publisher_;
 };
 

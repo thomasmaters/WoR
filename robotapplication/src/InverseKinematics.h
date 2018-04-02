@@ -83,7 +83,7 @@ class InverseKinematics
     }
 
     template <std::size_t H>
-    bool inSolutionSpace(const Matrix<H, 1, double>& phis, const Matrix<H, 2, double>& solutionSpace)
+    static bool inSolutionSpace(const Matrix<H, 1, double>& phis, const Matrix<H, 2, double>& solutionSpace)
     {
         for (std::size_t i = 0; i < H; ++i)
         {
@@ -95,21 +95,21 @@ class InverseKinematics
         return true;
     }
 
-    template <std::size_t H>
-    void limitToSolutionSpace(Matrix<H, 1, double>& phis, const Matrix<H, 2, double>& solutionSpace)
-    {
-        for (std::size_t i = 0; i < H; ++i)
-        {
-            if (toDegrees(phis.at(i, 0)) < solutionSpace.at(i, 0))
-            {
-                phis.at(i, 0) = toRadians(solutionSpace.at(i, 0));
-            }
-            else if (toDegrees(phis.at(i, 0)) > solutionSpace.at(i, 1))
-            {
-                phis.at(i, 0) = toRadians(solutionSpace.at(i, 1));
-            }
-        }
-    }
+    //    template <std::size_t H>
+    //    static void limitToSolutionSpace(Matrix<H, 1, double>& phis, const Matrix<H, 2, double>& solutionSpace)
+    //    {
+    //        for (std::size_t i = 0; i < H; ++i)
+    //        {
+    //            if (toDegrees(phis.at(i, 0)) < solutionSpace.at(i, 0))
+    //            {
+    //                phis.at(i, 0) = toRadians(solutionSpace.at(i, 0));
+    //            }
+    //            else if (toDegrees(phis.at(i, 0)) > solutionSpace.at(i, 1))
+    //            {
+    //                phis.at(i, 0) = toRadians(solutionSpace.at(i, 1));
+    //            }
+    //        }
+    //    }
 
     template <std::size_t W>
     Matrix<3, 1, double> calculateInverse(const Matrix<3, 1, double>& goal, Matrix<W, 1, double>& phis,

@@ -14,7 +14,6 @@ MotionControlInterface::MotionControlInterface()
 
     multiple_arm_pos_publisher_ =
         publisher_node_.advertise<robotarminterface::moveMultipleServosMsg>("moveMultipleServos", 10);
-    single_arm_pos_publisher_ = publisher_node_.advertise<robotarminterface::moveSingleServoMsg>("moveSingleServo", 10);
     defined_arm_pos_publisher_ =
         publisher_node_.advertise<robotarminterface::moveServoDefinedMsg>("moveServoToDefinedPosition", 10);
 }
@@ -33,14 +32,6 @@ void MotionControlInterface::publishMultipleServoMsg(const robotarminterface::mo
     if (ros::ok())
     {
         multiple_arm_pos_publisher_.publish(msg);
-    }
-}
-
-void MotionControlInterface::publishSingleServoMsg(const robotarminterface::moveSingleServoMsg& msg)
-{
-    if (ros::ok())
-    {
-        single_arm_pos_publisher_.publish(msg);
     }
 }
 

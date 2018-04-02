@@ -51,8 +51,8 @@ ShapeFilter::~ShapeFilter()
 
 float ShapeFilter::pytagoras(const cv::Point& a, const cv::Point& b)
 {
-    float width = std::abs(a.x - b.x);
-    float height = std::abs(a.y - b.y);
+    float width = static_cast<float>(std::abs(a.x - b.x));
+    float height = static_cast<float>(std::abs(a.y - b.y));
     return std::sqrt(width * width + height * height);
 }
 
@@ -62,10 +62,12 @@ void ShapeFilter::applyRLConversion(const cv::Size& screenSize, ShapeDetectResul
     {
         return;
     }
-    shape.widthInRL = shape.widthInPixels * pixelsToRLFactor;
-    shape.heightInRL = shape.heightInPixels * pixelsToRLFactor;
-    shape.xPositionRL = (shape.yPosition - screenSize.height / 2) * pixelsToRLFactor;
-    shape.yPositionRL = (shape.xPosition * pixelsToRLFactor) + 60;  // 60 mm ofset for center of gripper to front base.
+    shape.widthInRL = static_cast<float>(shape.widthInPixels) * pixelsToRLFactor;
+    shape.heightInRL = static_cast<float>(shape.heightInPixels) * pixelsToRLFactor;
+    shape.xPositionRL =
+        (static_cast<float>(shape.yPosition) - static_cast<float>(screenSize.height) / 2) * pixelsToRLFactor;
+    shape.yPositionRL = (static_cast<float>(shape.xPosition) * pixelsToRLFactor) +
+                        60;  // 60 mm ofset for center of gripper to front base.
     shape.radiusInRL = shape.radiusInPixels * pixelsToRLFactor;
     //    shape.toString();
 }
@@ -105,10 +107,10 @@ void ShapeFilter::findRectangles(const cv::Mat& source, std::vector<ShapeDetectR
             boundingBox.points(corners);
 
             // Construct result.
-            shapeResult.widthInPixels = pytagoras(corners[0], corners[1]);
-            shapeResult.heightInPixels = pytagoras(corners[1], corners[2]);
-            shapeResult.xPosition = boundingBox.center.x;
-            shapeResult.yPosition = boundingBox.center.y;
+            shapeResult.widthInPixels = static_cast<int32_t>(pytagoras(corners[0], corners[1]));
+            shapeResult.heightInPixels = static_cast<int32_t>(pytagoras(corners[1], corners[2]));
+            shapeResult.xPosition = static_cast<int32_t>(boundingBox.center.x);
+            shapeResult.yPosition = static_cast<int32_t>(boundingBox.center.y);
             shapeResult.rotation = boundingBox.angle;
             shapeResult.shapeType = isSquare(shapeResult) ?
                                         ShapeFilter::Shape::SQUARE :
@@ -126,7 +128,8 @@ void ShapeFilter::findRectangles(const cv::Mat& source, std::vector<ShapeDetectR
 
             if (showResult)
             {
-                cv::drawContours(drawing, contours, i, cv::Scalar(0, 100, 0), 1, 8, hierarchy, 0, cv::Point());
+                cv::drawContours(drawing, contours, static_cast<int32_t>(i), cv::Scalar(0, 100, 0), 1, 8, hierarchy, 0,
+                                 cv::Point());
                 drawSquare(drawing, corners);
             }
         }
@@ -140,11 +143,11 @@ void ShapeFilter::findRectangles(const cv::Mat& source, std::vector<ShapeDetectR
             cv::putText(drawingClone, "xPos: " + std::to_string(subResult.xPosition) + " yPos: " +
                                           std::to_string(subResult.yPosition),
                         cv::Point(subResult.xPosition, subResult.yPosition), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.6,
-                        cv::Scalar(200, 200, 250), 0.1);
+                        cv::Scalar(200, 200, 250), 1);
             cv::putText(drawingClone, "xSize: " + std::to_string(subResult.widthInRL) + " ySize: " +
                                           std::to_string(subResult.heightInRL),
                         cv::Point(subResult.xPosition, subResult.yPosition + 25), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.6,
-                        cv::Scalar(200, 200, 250), 0.1);
+                        cv::Scalar(200, 200, 250), 1);
         }
         ImageDisplayer::getInst().displayWindow(drawingClone, "ShapeFilter::findRectangles result");
     }
@@ -157,7 +160,7 @@ bool ShapeFilter::isSquare(const ShapeDetectResult& shapeData)
         return false;
     }
 
-    float factor = shapeData.widthInPixels / shapeData.heightInPixels;
+    float factor = static_cast<float>(shapeData.widthInPixels) / static_cast<float>(shapeData.heightInPixels);
     return (factor >= 0.9 && factor <= 1.1);
 }
 
@@ -183,8 +186,8 @@ void ShapeFilter::findCircles(const cv::Mat& source, std::vector<ShapeDetectResu
     {
         // Construct result.
         shapeResult.shapeType = ShapeFilter::Shape::CIRCLE;
-        shapeResult.xPosition = circles[i][0];
-        shapeResult.yPosition = circles[i][1];
+        shapeResult.xPosition = static_cast<int32_t>(circles[i][0]);
+        shapeResult.yPosition = static_cast<int32_t>(circles[i][1]);
         shapeResult.radiusInPixels = circles[i][2];
 
         // Fill in aditional values.
@@ -206,5 +209,6 @@ void ShapeFilter::findCircles(const cv::Mat& source, std::vector<ShapeDetectResu
 
 void ShapeFilter::drawCircle(cv::Mat& source, const cv::Vec3f& circleData)
 {
-    cv::circle(source, cv::Point(circleData[0], circleData[1]), circleData[2], cv::Scalar(255, 255, 255));
+    cv::circle(source, cv::Point(static_cast<int32_t>(circleData[0]), static_cast<int32_t>(circleData[1])),
+               static_cast<int32_t>(circleData[2]), cv::Scalar(255, 255, 255));
 }

@@ -124,15 +124,15 @@ struct ShapeDetectResult
     ShapeFilter::Shape shapeType = ShapeFilter::Shape::SQUARE;
     float radiusInPixels = 0;
     float radiusInRL = 0;
-    float widthInPixels = 0;
-    float heightInPixels = 0;
+    int32_t widthInPixels = 0;
+    int32_t heightInPixels = 0;
     float rotation = 0;  // degrees
     int32_t xPosition = 0;
     int32_t yPosition = 0;
     float widthInRL = 0;
     float heightInRL = 0;
-    int32_t xPositionRL = 0;
-    int32_t yPositionRL = 0;
+    float xPositionRL = 0;
+    float yPositionRL = 0;
 
     void toString() const
     {

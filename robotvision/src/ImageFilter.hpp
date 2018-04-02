@@ -21,7 +21,7 @@ class ImageFilter
     {
     }
 
-    ImageFilter(const ImageFilter& other) : filterMutex()
+    ImageFilter(const ImageFilter& other __attribute__((unused))) : filterMutex()
     {
     }
 

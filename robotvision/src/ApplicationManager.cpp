@@ -84,7 +84,7 @@ void ApplicationManager::specialCommandParser(std::string& command)
     {
         shapeFinder.setRealLifeConversionRate(
             colorFinder.applyFilter(inputHandler.getVideoCaptureFrame(), ColorFilter::Color::WHITE, showFilterProgress),
-            std::stoi(match[1]), showFilterProgress);
+            std::stof(match[1]), showFilterProgress);
         return;
     }
     if (command.find("applyfilter") != std::string::npos)

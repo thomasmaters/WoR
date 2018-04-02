@@ -1,6 +1,11 @@
 cmake_minimum_required(VERSION 2.8.3)
 project(robotvision)
 
+add_definitions(-std=c++11)
+add_definitions(-Wall)
+add_definitions(-Wextra)
+add_definitions(-Wconversion)
+
 find_package( OpenCV 2 REQUIRED)
 find_package( Threads REQUIRED)
 find_package( Doxygen)

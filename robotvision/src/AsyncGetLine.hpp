@@ -25,7 +25,7 @@ class AsyncGetline
                         std::this_thread::yield();
                     }
 
-                    nextCharacter = std::cin.get();
+                    nextCharacter = static_cast<char>(std::cin.get());
 
                     if (nextCharacter == '\n')
                     {
