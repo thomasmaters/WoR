@@ -1,9 +1,14 @@
 <launch>
   <rosparam command="load" file="$(find robotsimulation)/config/servo_config.yaml" />
   
-  <node name="motion_control_node" pkg="robotapplication" type="motion_control_node" launch-prefix="xterm -e" required="true"/>
-  <node name="robotarm_interface_node" pkg="robotarminterface" type="robotarm_interface_node" launch-prefix="xterm -e"/>
-  <node name="robot_vision_node" pkg="robotvision" type="robot_vision_node" launch-prefix="xterm -e"/>
+  <arg name="full" default="false" />
   
-  <include file="$(find robotsimulation)/launch/default.launch" pass_all_args="true"/>
+  <node name="motion_control_node" pkg="robotapplication" type="motion_control_node" launch-prefix="xterm -e" required="true"/>
+  
+  <group if="$(arg full)">
+    <node name="robotarm_interface_node" pkg="robotarminterface" type="robotarm_interface_node" launch-prefix="xterm -e"/>
+    <node name="robot_vision_node" pkg="robotvision" type="robot_vision_node" launch-prefix="xterm -e"/>
+  
+    <include file="$(find robotsimulation)/launch/default.launch" pass_all_args="false"/>
+  </group>
 </launch>

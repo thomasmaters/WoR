@@ -68,6 +68,7 @@ Matrix<3, 2, double> MotionControlInterface::getServoConfigurationSpace() const
             {
                 servo_configuration_space.at(count, 0) = static_cast<int>(it->second[2]);
                 servo_configuration_space.at(count, 1) = static_cast<int>(it->second[3]);
+                it = servo_config.begin();
                 count++;
             }
         }

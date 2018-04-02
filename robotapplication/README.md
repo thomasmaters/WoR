@@ -21,3 +21,25 @@ Voer vervolgens het volgende commando uit in een bash shell.
 ```
 catkin_make --pkg robotapplication
 ```
+
+### Run instructies ###
+Nadat de package is gecompileerd kan hij gestart worden met de volgende commando's uit te voeren in een bash shell.
+
+```
+source ./devel/setup.bash
+rosrun robotapplication motion_control_node
+```
+
+of
+
+```
+source ./devel/setup.bash
+roslaunch robotapplication default.launch
+```
+
+Indien de packages robotarminterface, robotvision & robotsimulation ook aanwezig zijn en gecompileerd:
+
+```
+source ./devel/setup.bash
+roslaunch robotapplication default.launch full:=true
+```
