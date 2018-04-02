@@ -75,6 +75,10 @@ class InputHandler
      */
     cv::Mat getVideoCaptureFrame()
     {
+        if (!cap.isOpened())
+        {
+            return image;
+        }
         videoCaptureMutex.lock();
         cv::Mat output;
         try
@@ -93,6 +97,10 @@ class InputHandler
 
     void displayVideoCapture()
     {
+        if (!cap.isOpened())
+        {
+            return;
+        }
         std::thread video([this] {
             cv::Mat windowFrame;
             while (cap.isOpened())

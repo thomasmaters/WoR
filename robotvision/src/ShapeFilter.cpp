@@ -65,7 +65,8 @@ void ShapeFilter::applyRLConversion(const cv::Size& screenSize, ShapeDetectResul
     shape.widthInRL = shape.widthInPixels * pixelsToRLFactor;
     shape.heightInRL = shape.heightInPixels * pixelsToRLFactor;
     shape.xPositionRL = (shape.yPosition - screenSize.height / 2) * pixelsToRLFactor;
-    shape.yPositionRL = (shape.xPosition * pixelsToRLFactor) + 60;
+    shape.yPositionRL = (shape.xPosition * pixelsToRLFactor) + 60;  // 60 mm ofset for center of gripper to front base.
+    shape.radiusInRL = shape.radiusInPixels * pixelsToRLFactor;
     //    shape.toString();
 }
 
@@ -136,13 +137,13 @@ void ShapeFilter::findRectangles(const cv::Mat& source, std::vector<ShapeDetectR
         cv::Mat drawingClone = drawing.clone();
         for (auto& subResult : result)
         {
-            cv::putText(drawingClone, "xPos: " + std::to_string(subResult.xPositionRL) + " yPos: " +
-                                          std::to_string(subResult.yPositionRL),
-                        cv::Point(subResult.xPosition, subResult.yPosition), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8,
+            cv::putText(drawingClone, "xPos: " + std::to_string(subResult.xPosition) + " yPos: " +
+                                          std::to_string(subResult.yPosition),
+                        cv::Point(subResult.xPosition, subResult.yPosition), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.6,
                         cv::Scalar(200, 200, 250), 0.1);
             cv::putText(drawingClone, "xSize: " + std::to_string(subResult.widthInRL) + " ySize: " +
                                           std::to_string(subResult.heightInRL),
-                        cv::Point(subResult.xPosition, subResult.yPosition + 25), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.8,
+                        cv::Point(subResult.xPosition, subResult.yPosition + 25), cv::FONT_HERSHEY_COMPLEX_SMALL, 0.6,
                         cv::Scalar(200, 200, 250), 0.1);
         }
         ImageDisplayer::getInst().displayWindow(drawingClone, "ShapeFilter::findRectangles result");

@@ -11,6 +11,8 @@
 
 #include "robotapplication/pick_and_place.h"
 #include "ros/ros.h"
+#include "tf/tf.h"
+#include "visualization_msgs/Marker.h"
 
 #include "ApplicationManager.hpp"
 
@@ -28,7 +30,15 @@ ApplicationManager::ApplicationManager()
 {
     if (!inputHandler.openVideoCapture(1))
     {
-        inputHandler.openVideoCapture(0);
+        std::cout << "Failed to open video capture." << std::endl;
+        if (!inputHandler.loadImage("/home/thomas/catkin_ws_course/src/WoR/robotvision/doc/test.png"))
+        {
+            std::cout << "Failed to load image" << std::endl;
+            if (!inputHandler.openVideoCapture(0))
+            {
+                std::cout << "Failed to open default video capture" << std::endl;
+            }
+        }
     }
     inputHandler.displayVideoCapture();
     shapeFinder.setRealLifeConversionRate(
@@ -52,7 +62,7 @@ void ApplicationManager::start()
             std::cout << "Enter command:" << std::endl;
         }
         ImageDisplayer::getInst().updateWindows();
-        cv::waitKey(100);
+        cv::waitKey(1000 / FPS);
     }
 }
 
@@ -124,16 +134,19 @@ void ApplicationManager::specialCommandParser(std::string& command)
             if (findSingleObject("white circle", targetVector))
             {
                 robotapplication::pick_and_place message;
-                message.target.x = -1 * resultVector.at(0).xPositionRL + 10;
+                message.target.x = -1 * resultVector.at(0).xPositionRL;
                 message.target.y = resultVector.at(0).yPositionRL;
                 message.target.z = 90;
                 message.targetRotation = resultVector.at(0).rotation;
-                message.dest.x = -1 * targetVector.at(0).xPositionRL + 10;
+                message.dest.x = -1 * targetVector.at(0).xPositionRL;
                 message.dest.y = targetVector.at(0).yPositionRL;
                 message.dest.z = 90;
                 message.destRotation = 0;
-                std::cout << "Going to: " << message.dest << " from: " << message.target << std::endl;
+                std::cout << "Going to: " << message.dest << "rot: " << message.targetRotation << std::endl
+                          << "from: " << message.target << std::endl;
                 rosCommunication.sendPickupLocation(message);
+
+                publishDebugMarkers(resultVector, targetVector);
             }
             else
             {
@@ -209,6 +222,7 @@ std::pair<ColorFilter::Color, ShapeFilter::Shape> ApplicationManager::findComman
 bool ApplicationManager::findSingleObject(const std::string& command, std::vector<ShapeDetectResult>& result)
 {
     cv::Mat frame = inputHandler.getVideoCaptureFrame();
+
     if (!frame.empty())
     {
         std::pair<ColorFilter::Color, ShapeFilter::Shape> findParameters = findCommandParser(command);
@@ -233,4 +247,57 @@ bool ApplicationManager::findSingleObject(const std::string& command, std::vecto
         std::cerr << "Video capture frame is empty." << std::endl;
     }
     return false;
+}
+
+void ApplicationManager::publishDebugMarkers(const std::vector<ShapeDetectResult>& resultVector,
+                                             const std::vector<ShapeDetectResult>& targetVector)
+{
+    visualization_msgs::Marker target_marker;
+    target_marker.header.frame_id = "world";
+    target_marker.header.stamp = ros::Time::now();
+    target_marker.ns = "vision";
+    target_marker.id = 0;
+    target_marker.type = visualization_msgs::Marker::CUBE;
+
+    target_marker.pose.position.y = -1 * (double)resultVector.at(0).xPositionRL / 1000;
+    target_marker.pose.position.x = (double)resultVector.at(0).yPositionRL / 1000;
+    target_marker.pose.position.z = 0;
+
+    target_marker.pose.orientation = tf::createQuaternionMsgFromYaw((resultVector.at(0).rotation - 90) * M_PI / 180);
+    target_marker.pose.orientation.w *= -1;
+
+    target_marker.scale.x = (double)resultVector.at(0).widthInRL / 1000;   // Length
+    target_marker.scale.y = (double)resultVector.at(0).heightInRL / 1000;  // Width
+    target_marker.scale.z = 0.02;                                          // Height
+
+    target_marker.color.a = 1.0;  // Don't forget to set the alpha!
+    target_marker.color.r = 0.0;
+    target_marker.color.g = 0.0;
+    target_marker.color.b = 1.0;
+
+    visualization_msgs::Marker circle_marker;
+    circle_marker.header.frame_id = "world";
+    circle_marker.header.stamp = ros::Time::now();
+    circle_marker.ns = "vision";
+    circle_marker.id = 1;
+    circle_marker.type = visualization_msgs::Marker::CYLINDER;
+
+    circle_marker.pose.position.y = -1 * (double)targetVector.at(0).xPositionRL / 1000;
+    circle_marker.pose.position.x = (double)targetVector.at(0).yPositionRL / 1000;
+    circle_marker.pose.position.z = 0;
+    circle_marker.pose.orientation.x = 0.0;
+    circle_marker.pose.orientation.y = 0.0;
+    circle_marker.pose.orientation.z = 0.0;
+    circle_marker.pose.orientation.w = 1;
+
+    circle_marker.scale.x = (double)targetVector.at(0).radiusInRL * 2 / 1000;  // Length
+    circle_marker.scale.y = (double)targetVector.at(0).radiusInRL * 2 / 1000;  // Width
+    circle_marker.scale.z = 0.005;                                             // Height
+
+    circle_marker.color.a = 1.0;  // Don't forget to set the alpha!
+    circle_marker.color.r = 1.0;
+    circle_marker.color.g = 1.0;
+    circle_marker.color.b = 1.0;
+    rosCommunication.sendDebugMarker(target_marker);
+    rosCommunication.sendDebugMarker(circle_marker);
 }

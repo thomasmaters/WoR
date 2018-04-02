@@ -31,6 +31,9 @@ class ApplicationManager
 
     bool findSingleObject(const std::string& command, std::vector<ShapeDetectResult>& result);
 
+    void publishDebugMarkers(const std::vector<ShapeDetectResult>& resultVector,
+                             const std::vector<ShapeDetectResult>& targetVector);
+
     ImageFilter imageFilter;
     InputHandler inputHandler;
     ColorFilter colorFinder;

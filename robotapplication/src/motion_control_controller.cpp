@@ -65,7 +65,7 @@ void MotionControl::moveToPos(const float y, const float x, const float z, const
     moveServosMsg.servos.push_back(moveSingleServoMsg);
 
     moveSingleServoMsg.channel = 4;
-    moveSingleServoMsg.rotation = rotation;
+    moveSingleServoMsg.rotation = InverseKinematics::toDegrees(lastPhis.at(0, 0)) + rotation;
     moveServosMsg.servos.push_back(moveSingleServoMsg);
 
     moveSingleServoMsg.channel = 5;

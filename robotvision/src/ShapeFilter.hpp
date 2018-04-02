@@ -123,6 +123,7 @@ struct ShapeDetectResult
 {
     ShapeFilter::Shape shapeType = ShapeFilter::Shape::SQUARE;
     float radiusInPixels = 0;
+    float radiusInRL = 0;
     float widthInPixels = 0;
     float heightInPixels = 0;
     float rotation = 0;  // degrees
