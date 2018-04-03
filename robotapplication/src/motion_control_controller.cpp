@@ -41,10 +41,10 @@ void MotionControl::moveToTarget(const robotapplication::pick_and_place msg)
     publishDefinedServoMsg(moveServoDefinedMsg);
 }
 
-void MotionControl::moveToPos(const float y, const float x, const float z, const float rotation,
+void MotionControl::moveToPos(const float x, const float y, const float z, const float rotation,
                               const bool gripperState)
 {
-    Matrix<3, 1, double> goal = { x, y, z };
+    Matrix<3, 1, double> goal = { y, x, z };
     std::cout << "goal: " << goal << std::endl;
     lastPhis = phis;
     InverseKinematics::getInstance().calculateInverse(goal, lastPhis, armLengths, solutionSpace);
