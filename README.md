@@ -1,6 +1,12 @@
 # WoR - World of Robots Assignment
 Repo containing my assignment for WoR-World and WoR-Robot.
 
+## WoR-World Simulatie
+This assignment can be found in the package with the name 'robotsimulation'.
+
+## WoR-Robots Applicatie
+This assignment can be found in the package with the name 'robotapplication'.
+
 ##Build requirements:
 - ROS-Lunar
 - OpenCV 3

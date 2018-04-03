@@ -46,3 +46,10 @@ Indien de packages robotarminterface, robotvision & robotsimulation ook aanwezig
 source ./devel/setup.bash
 roslaunch robotapplication default.launch full:=true
 ```
+
+Indien u de simulatie er niet bij wilt starten:
+
+```
+source ./devel/setup.bash
+roslaunch robotapplication default.launch full:=true with_sim:=false
+```

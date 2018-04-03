@@ -10,7 +10,7 @@
 ### Build requirements ###
 Om dit project te bouwen zijn de volgende vereisten nodig:
 
-- ROS Kinetic(minimaal)
+- ROS Lunar
 - Boost v1.58
 - OpenCV 2
 - Gnu 6.2
@@ -32,7 +32,6 @@ Om de demo te starten voor de volgende commando's uit in uw terminal:
 ```
 source ./devel/setup.bash
 roslaunch robotsimulation default.launch demo:=true
-rosrun robotsimulation cli_node
 ```
 
 Om handmatige de simulatie aan te sturen dient uw de volgende commando uit te voeren:
