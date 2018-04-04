@@ -16,8 +16,6 @@
 
 #include "ApplicationManager.hpp"
 
-#define FPS 20
-
 ApplicationManager::ApplicationManager()
   : imageFilter(ImageFilter())
   , inputHandler(InputHandler())
@@ -136,11 +134,11 @@ void ApplicationManager::specialCommandParser(std::string& command)
                 robotapplication::pick_and_place message;
                 message.target.x = -1 * resultVector.at(0).xPositionRL;
                 message.target.y = resultVector.at(0).yPositionRL;
-                message.target.z = 90;
+                message.target.z = PICKUP_HEIGHT;
                 message.targetRotation = resultVector.at(0).rotation;
                 message.dest.x = -1 * targetVector.at(0).xPositionRL;
                 message.dest.y = targetVector.at(0).yPositionRL;
-                message.dest.z = 90;
+                message.dest.z = PICKUP_HEIGHT;
                 message.destRotation = 0;
                 std::cout << "Going to: " << message.dest << "rot: " << message.targetRotation << std::endl
                           << "from: " << message.target << std::endl;

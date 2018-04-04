@@ -16,6 +16,9 @@
 #include "RosCommunication.hpp"
 #include "ShapeFilter.hpp"
 
+#define FPS 20
+#define PICKUP_HEIGHT 60  // mm
+
 class ApplicationManager
 {
   public:
